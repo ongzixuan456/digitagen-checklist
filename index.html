@@ -1562,7 +1562,7 @@
 
   const DESIGNER_WA = '60182071132';
   const DESIGNER_EMAIL = 'ongzixuan123@gmail.com';
-  const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${DESIGNER_EMAIL}`;
+  const FORMSUBMIT_ACTION = `https://formsubmit.co/${DESIGNER_EMAIL}`;
 
   function closeModal() {
     document.getElementById('successModal').classList.remove('open');
@@ -1586,13 +1586,12 @@
   async function submitChecklist() {
     const btnBar = document.getElementById('btnSubmitBar');
     const btnInl = document.getElementById('btnSubmitInline');
-    const setLoading = (loading) => {
-      if (btnBar) { btnBar.disabled = loading; btnBar.textContent = loading ? 'Sending...' : '✓ Done — Submit'; }
-      if (btnInl) { btnInl.disabled = loading; btnInl.textContent = loading ? 'Sending checklist...' : '✓ Done — Submit Checklist'; }
-    };
+    if (btnBar) { btnBar.disabled = true; btnBar.textContent = 'Uploading & sending...'; }
+    if (btnInl) { btnInl.disabled = true; btnInl.textContent = 'Uploading files & sending...'; }
 
-    setLoading(true);
     try {
+      saveState();
+
       const v = id => (document.getElementById(id)?.value || '').trim();
       const rad = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '-';
       const chks = name => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => {
@@ -1602,101 +1601,141 @@
         return val;
       }).join('; ') || 'None';
 
-      const fd = new FormData();
-      fd.append('_subject', `Digitagen Website Requirements Checklist — ${rad('design_choice')}`);
-      fd.append('_captcha', 'false');
-      fd.append('_template', 'table');
+      // Build a real multipart/form-data HTML form (FormSubmit requires standard POST for real email file attachments!)
+      const postForm = document.createElement('form');
+      postForm.method = 'POST';
+      postForm.action = FORMSUBMIT_ACTION;
+      postForm.enctype = 'multipart/form-data';
+      postForm.style.display = 'none';
 
-      fd.append('Company', v('f_company') || 'Digitagen Sdn Bhd');
-      fd.append('SSM Registration No', v('f_ssm') || '-');
-      fd.append('Office Address', v('f_address') || '-');
-      fd.append('Contact Person', v('f_contact') || '-');
-      fd.append('Mobile / WhatsApp', v('f_mobile') || '-');
-      fd.append('Tel', v('f_tel') || '-');
-      fd.append('Email', v('f_email') || '-');
-      fd.append('Date Filled In', v('f_date') || '-');
+      const addHidden = (name, value) => {
+        const inp = document.createElement('input');
+        inp.type = 'hidden';
+        inp.name = name;
+        inp.value = value;
+        postForm.appendChild(inp);
+      };
 
-      fd.append('1. Design Selected', rad('design_choice'));
-      fd.append('1. Design Notes', v('f_design_notes') || '-');
-
-      fd.append('2. Domain Status', rad('domain_status') + (v('f_domain_name') ? ` (${v('f_domain_name')})` : ''));
-      fd.append('2. Domain Registrar', v('f_registrar') || '-');
-      fd.append('2. Domain Login Holder', v('f_login_holder') || '-');
-      fd.append('2. Email on Domain', rad('domain_has_email'));
-      fd.append('2. Existing Website', rad('domain_has_site'));
-
-      fd.append('3. Pages Selected', chks('pages'));
-      fd.append('4. Price Display', rad('price_display'));
-      fd.append('4. Brands & Products', chks('brands'));
-      fd.append('4. Confirmed Specs', chks('needed_items'));
-
-      fd.append('5. Ordering & Contact', chks('ordering'));
-      fd.append('5. Alternate Quote Recipient', v('f_alt_contact') || '-');
-
-      fd.append('6. Languages', chks('languages'));
-      fd.append('6. Translation Option', rad('translation_by'));
-
-      fd.append('7. Content Checklist', chks('content_sent'));
-      fd.append('8. Google & Marketing', chks('marketing'));
-
-      fd.append('9. After Launch', rad('after_launch'));
-      fd.append('9. Updates Approver', v('f_update_person') || '-');
-
-      fd.append('10. Target Launch Date', v('f_target_date') || '-');
-      fd.append('10. Design Approver', v('f_approver') || '-');
-      fd.append('10. Other Requests', v('f_other_req') || '-');
-      fd.append('10. Signed By (Digitagen)', `${v('f_sig_client_name') || '-'} (${v('f_sig_client_date') || '-'})`);
-
-      const csUrl = buildCounterSignUrl();
-      if (csUrl) fd.append('Counter-Sign & Final PDF Link', csUrl);
-
-      // Attach files + signature automatically (bundled cleanly into ZIP if files attached, respecting 9MB email limit)
       const nFiles = totalAttachedCount();
-      let oversizedZip = false;
       const sigBlob = await canvasToPngBlob('sigClient');
 
-      if (nFiles > 0) {
-        const zipBlob = await buildZipBlob();
-        const totalWithSig = zipBlob.size + (sigBlob ? sigBlob.size : 0);
-        if (totalWithSig <= 9 * 1024 * 1024) {
-          fd.append('attachment', zipBlob, 'Digitagen-Website-Assets.zip');
-        } else {
-          oversizedZip = true;
-          fd.append('Attached Files Note', `Total files (${formatBytes(zipBlob.size)}) exceeded 9 MB email limit — client downloaded Digitagen-Website-Assets.zip separately.`);
-        }
-      } else if (sigBlob) {
-        fd.append('attachment', sigBlob, 'Digitagen-Signature.png');
-      }
-
-      const resp = await fetch(FORMSUBMIT_URL, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fd,
+      // Measure total attached bytes
+      let totalBytes = sigBlob ? sigBlob.size : 0;
+      const allNamedFiles = [];
+      Object.entries(FILE_SLOTS).forEach(([slot, meta]) => {
+        attachedFiles[slot].forEach((file, i) => {
+          totalBytes += file.size;
+          allNamedFiles.push({ field: `${meta.label.replace(/[^a-zA-Z0-9]+/g, '_')}_${i + 1}`, file });
+        });
       });
-      const resJson = await resp.json().catch(() => ({}));
 
-      if (!resp.ok || resJson.success === 'false') {
-        throw new Error(resJson.message || 'Submission could not be completed');
-      }
-
-      const warnBox = document.getElementById('modalSizeWarn');
-      if (oversizedZip) {
+      const oversized = totalBytes > 8 * 1024 * 1024;
+      if (oversized && nFiles > 0) {
         await downloadZip(true);
-        warnBox.style.display = 'block';
-        warnBox.innerHTML = '<b>Large files downloaded separately:</b> Your checklist has been received, and because your attachments were over 9 MB, we saved <b>Digitagen-Website-Assets.zip</b> to your device—please drop it into WhatsApp (+60 18-207 1132).';
-      } else {
-        warnBox.style.display = 'none';
       }
 
-      const fileSummary = nFiles > 0 && !oversizedZip ? ` (including ${nFiles} attached ${nFiles === 1 ? 'file' : 'files'})` : '';
-      document.getElementById('modalMsg').textContent = `Thank you! Your completed requirements checklist${fileSummary} has been received directly by the designer.`;
-      document.getElementById('successModal').classList.add('open');
+      const baseUrl = window.location.href.startsWith('http')
+        ? (window.location.origin + window.location.pathname)
+        : '';
+      if (baseUrl) {
+        addHidden('_next', `${baseUrl}?submitted=1&files=${oversized ? 'zip' : nFiles}`);
+      }
+      addHidden('_subject', `Digitagen Website Requirements Checklist — ${rad('design_choice')}`);
+      addHidden('_captcha', 'false');
+      addHidden('_template', 'table');
+
+      addHidden('Company', v('f_company') || 'Digitagen Sdn Bhd');
+      addHidden('SSM Registration No', v('f_ssm') || '-');
+      addHidden('Office Address', v('f_address') || '-');
+      addHidden('Contact Person', v('f_contact') || '-');
+      addHidden('Mobile / WhatsApp', v('f_mobile') || '-');
+      addHidden('Tel', v('f_tel') || '-');
+      addHidden('Email', v('f_email') || '-');
+      addHidden('Date Filled In', v('f_date') || '-');
+
+      addHidden('1. Design Selected', rad('design_choice'));
+      addHidden('1. Design Notes', v('f_design_notes') || '-');
+
+      addHidden('2. Domain Status', rad('domain_status') + (v('f_domain_name') ? ` (${v('f_domain_name')})` : ''));
+      addHidden('2. Domain Registrar', v('f_registrar') || '-');
+      addHidden('2. Domain Login Holder', v('f_login_holder') || '-');
+      addHidden('2. Email on Domain', rad('domain_has_email'));
+      addHidden('2. Existing Website', rad('domain_has_site'));
+
+      addHidden('3. Pages Selected', chks('pages'));
+      addHidden('4. Price Display', rad('price_display'));
+      addHidden('4. Brands & Products', chks('brands'));
+      addHidden('4. Confirmed Specs', chks('needed_items'));
+
+      addHidden('5. Ordering & Contact', chks('ordering'));
+      addHidden('5. Alternate Quote Recipient', v('f_alt_contact') || '-');
+
+      addHidden('6. Languages', chks('languages'));
+      addHidden('6. Translation Option', rad('translation_by'));
+
+      addHidden('7. Content Checklist', chks('content_sent'));
+      addHidden('8. Google & Marketing', chks('marketing'));
+
+      addHidden('9. After Launch', rad('after_launch'));
+      addHidden('9. Updates Approver', v('f_update_person') || '-');
+
+      addHidden('10. Target Launch Date', v('f_target_date') || '-');
+      addHidden('10. Design Approver', v('f_approver') || '-');
+      addHidden('10. Other Requests', v('f_other_req') || '-');
+      addHidden('10. Signed By (Digitagen)', `${v('f_sig_client_name') || '-'} (${v('f_sig_client_date') || '-'})`);
+
+      const csUrl = buildCounterSignUrl();
+      if (csUrl) addHidden('Counter-Sign & Final PDF Link', csUrl);
+
+      if (oversized) {
+        addHidden('Attached Files Note', `Total files (${formatBytes(totalBytes)}) exceeded 8 MB email limit — client downloaded Digitagen-Website-Assets.zip to send via WhatsApp.`);
+      } else {
+        // Attach every uploaded file as a real multipart file input so it arrives directly inside Gmail!
+        const addFileInput = (fieldName, fileObj) => {
+          const fi = document.createElement('input');
+          fi.type = 'file';
+          fi.name = fieldName;
+          const dt = new DataTransfer();
+          dt.items.add(fileObj);
+          fi.files = dt.files;
+          postForm.appendChild(fi);
+        };
+        allNamedFiles.forEach(({ field, file }) => addFileInput(field, file));
+        if (sigBlob) {
+          addFileInput('Digitagen_Signature', new File([sigBlob], 'Digitagen-Signature.png', { type: 'image/png' }));
+        }
+        if (allNamedFiles.length) {
+          addHidden('Attached Files List', allNamedFiles.map(x => `${x.field}: ${x.file.name}`).join(', '));
+        }
+      }
+
+      document.body.appendChild(postForm);
+      postForm.submit();
     } catch (err) {
       console.error(err);
-      showToast('Network error — please try again or use WhatsApp');
+      if (btnBar) { btnBar.disabled = false; btnBar.textContent = '✓ Done — Submit'; }
+      if (btnInl) { btnInl.disabled = false; btnInl.textContent = '✓ Done — Submit Checklist'; }
       alert('Could not submit directly right now (' + err.message + '). You can click "WhatsApp" to send your completed checklist directly to +60 18-207 1132.');
-    } finally {
-      setLoading(false);
+    }
+  }
+
+  function checkSubmittedBanner() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('submitted') === '1') {
+      const fParam = params.get('files');
+      const warnBox = document.getElementById('modalSizeWarn');
+      if (fParam === 'zip') {
+        warnBox.style.display = 'block';
+        warnBox.innerHTML = '<b>Large files saved separately:</b> Your checklist has been received, and because your attachments were over 8 MB, <b>Digitagen-Website-Assets.zip</b> was downloaded to your device—please drop it into WhatsApp (+60 18-207 1132).';
+        document.getElementById('modalMsg').textContent = 'Thank you! Your completed requirements checklist has been received directly by the designer.';
+      } else {
+        warnBox.style.display = 'none';
+        const n = parseInt(fParam || '0', 10);
+        const fNote = n > 0 ? ` (along with ${n} attached ${n === 1 ? 'file' : 'files'})` : '';
+        document.getElementById('modalMsg').textContent = `Thank you! Your completed requirements checklist${fNote} has been sent directly to the designer’s inbox.`;
+      }
+      document.getElementById('successModal').classList.add('open');
+      history.replaceState(null, '', window.location.pathname + window.location.hash);
     }
   }
 
@@ -1836,6 +1875,7 @@
   initSig('sigDesigner');
   initUploadSlots();
   loadState();
+  checkSubmittedBanner();
   window.addEventListener('resize', () => { redrawSig('sigClient'); redrawSig('sigDesigner'); });
 </script>
 </body>
