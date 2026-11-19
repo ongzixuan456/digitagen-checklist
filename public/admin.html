@@ -471,14 +471,15 @@
     list.innerHTML = submissions.map(s => {
       const isSigned = s.status === 'dual-signed';
       const fCount = (s.files || []).length;
+      const verTag = (s.version && s.version > 1) ? ` · v${s.version}` : '';
       return `
         <div class="sub-item ${s.id === activeId ? 'active' : ''}" onclick="selectSubmission('${esc(s.id)}')">
           <div class="sub-top">
             <span class="sub-co">${esc(s.company?.contactPerson || s.company?.name || 'Digitagen Sdn Bhd')}</span>
             <span class="pill ${isSigned ? 'pill-done' : 'pill-wait'}">${isSigned ? '✓ Dual-Signed' : 'Pending Sign'}</span>
           </div>
-          <div class="sub-meta">${esc(s.design?.choice || 'Design 1')} · ${fCount} ${fCount === 1 ? 'file' : 'files'}</div>
-          <div class="sub-meta" style="margin-top:2px;font-size:11.5px;">${esc(fmtDate(s.submittedAt))}</div>
+          <div class="sub-meta">${esc(s.design?.choice || 'Design 1')} · ${fCount} ${fCount === 1 ? 'file' : 'files'}${verTag}</div>
+          <div class="sub-meta" style="margin-top:2px;font-size:11.5px;">${esc(fmtDate(s.updatedAt || s.submittedAt))}${s.updatedAt ? ' (edited)' : ''}</div>
         </div>
       `;
     }).join('');
@@ -509,7 +510,10 @@
               <div class="file-name">${esc(f.name)}</div>
               <div class="file-foot">
                 <span class="file-sz">${esc(formatBytes(f.size))}</span>
-                <a class="btn btn-outline no-print" style="padding:4px 10px;font-size:11.5px;" href="${esc(f.downloadUrl)}" download="${esc(f.name)}">Download</a>
+                <span style="display:inline-flex;gap:5px;" class="no-print">
+                  <a class="btn btn-outline" style="padding:4px 8px;font-size:11.5px;" href="${esc(f.previewUrl)}" target="_blank" rel="noopener">View</a>
+                  <a class="btn btn-outline" style="padding:4px 10px;font-size:11.5px;" href="${esc(f.downloadUrl)}" download="${esc(f.name)}">Download</a>
+                </span>
               </div>
             </div>
           `;
@@ -525,7 +529,7 @@
       <div class="det-head">
         <div>
           <h1>${esc(s.company?.name || 'Digitagen Sdn Bhd')} — Website Requirements</h1>
-          <div class="det-sub">Ref: <b>${esc(s.id)}</b> · Submitted ${esc(fmtDate(s.submittedAt))} · <span class="pill ${isSigned ? 'pill-done' : 'pill-wait'}">${isSigned ? '✓ Dual-Signed' : 'Awaiting Designer Counter-Sign'}</span></div>
+          <div class="det-sub">Ref: <b>${esc(s.id)}</b>${(s.version && s.version > 1) ? ` · <b>v${s.version}</b>` : ''} · Submitted ${esc(fmtDate(s.submittedAt))}${s.updatedAt ? ' · Updated ' + esc(fmtDate(s.updatedAt)) : ''} · <span class="pill ${isSigned ? 'pill-done' : 'pill-wait'}">${isSigned ? '✓ Dual-Signed (Client Locked)' : 'Awaiting Designer Counter-Sign'}</span></div>
         </div>
         <div class="det-actions no-print">
           <button type="button" class="btn btn-primary" onclick="window.print()">Print / Save Final PDF</button>

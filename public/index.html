@@ -614,6 +614,82 @@
   }
   .upload-prog-txt { font-size: 11.5px; color: var(--ink-2); font-weight: 500; }
 
+  /* Post-Submit Lock Banner & Read-Only State */
+  .locked-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    background: #F0FDF4;
+    border: 1.5px solid #86EFAC;
+    color: #14532D;
+  }
+  .locked-banner.show { display: flex; }
+  .locked-banner.is-editing {
+    background: #FFFBEB;
+    border-color: #FCD34D;
+    color: #78350F;
+  }
+  .locked-banner-left { display: flex; flex-direction: column; gap: 3px; }
+  .locked-badge {
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .locked-info { font-size: 12px; opacity: 0.9; line-height: 1.4; }
+  .locked-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .btn-locked-state {
+    background: #166534 !important;
+    color: #FFFFFF !important;
+    cursor: default !important;
+    opacity: 0.92 !important;
+  }
+  form.is-locked .input:disabled,
+  form.is-locked textarea:disabled,
+  form.is-locked .inline-input:disabled {
+    background: #FAF9F6;
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    opacity: 1;
+    cursor: not-allowed;
+  }
+  form.is-locked .check-row { cursor: default; }
+  form.is-locked .check-row:hover { background: transparent; }
+  form.is-locked .check-row.is-checked:hover { background: #F5F5F2; }
+  form.is-locked .upload-zone,
+  form.is-locked .btn-attach,
+  form.is-locked .file-chip-rm,
+  form.is-locked .btn-clear-sig {
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  form.is-locked .file-chip-rm { display: none; }
+  form.is-locked .sig-canvas-wrap {
+    pointer-events: none;
+    background: #FAF9F6;
+  }
+  .file-chip.is-uploaded {
+    background: #F0FDF4;
+    border-color: #86EFAC;
+  }
+  .file-chip-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #15803D;
+    background: #DCFCE7;
+    padding: 1px 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
   .toast {
     position: fixed;
     bottom: 76px;
@@ -654,7 +730,7 @@
     @page { size: A4 portrait; margin: 12mm; }
     body { background: #FFFFFF; padding: 0; font-size: 11px; }
     .sheet { border: none; box-shadow: none; padding: 0; max-width: none; }
-    .action-bar, .save-pill, .btn-clear-sig, .toast, .btn-attach, .file-chip-rm, .inline-submit-wrap, .modal-backdrop { display: none !important; }
+    .action-bar, .save-pill, .locked-banner, .btn-clear-sig, .toast, .btn-attach, .file-chip-rm, .inline-submit-wrap, .modal-backdrop { display: none !important; }
     .section { break-inside: avoid; }
     .input, textarea { border: 1px solid #D4D4D8; padding: 5px 8px; font-size: 11px; }
     .check-row { padding: 6px 6px; }
@@ -679,6 +755,18 @@
   <h1 class="doc-title">Website Requirements Checklist</h1>
   <p class="doc-intro">Tick everything Digitagen wants on the new website and type notes directly below. Items marked <b>Extra cost</b> are quoted separately; <b>Included</b> items are part of the base website quotation.</p>
   <div class="save-pill"><span class="save-dot"></span><span id="saveState">Auto-saved in browser · Design 1 pre-selected</span></div>
+
+  <!-- POST-SUBMIT LOCK BANNER -->
+  <div class="locked-banner" id="lockedBanner">
+    <div class="locked-banner-left">
+      <span class="locked-badge" id="lockedBadge">✓ Checklist Submitted &amp; Locked</span>
+      <span class="locked-info" id="lockedInfo">Your selections and files have been saved. This form is locked to prevent accidental changes.</span>
+    </div>
+    <div class="locked-actions">
+      <button type="button" class="btn btn-outline" id="btnUnlockEdit" onclick="unlockForEdit()">Unlock to Edit</button>
+      <button type="button" class="btn btn-outline" id="btnCancelEdit" style="display:none;" onclick="relockForm()">Cancel &amp; Re-lock</button>
+    </div>
+  </div>
 
   <!-- COMPANY DETAILS -->
   <section class="section" style="margin-top:18px;">
@@ -1082,8 +1170,8 @@
     </div>
     <div class="inline-submit-wrap">
       <div class="inline-submit-text">
-        <b>Finished filling out the checklist?</b>
-        <span>Click Done to send your selections, signature and attached files directly to the designer.</span>
+        <b id="inlineSubmitTitle">Finished filling out the checklist?</b>
+        <span id="inlineSubmitDesc">Click Done to send your selections, signature and attached files directly to the designer.</span>
       </div>
       <button type="button" class="btn btn-submit-big" id="btnSubmitInline" onclick="submitChecklist()">✓ Done — Submit Checklist</button>
       <div class="upload-prog-wrap" id="uploadProgWrap">
@@ -1104,7 +1192,7 @@
       <button type="button" class="btn btn-submit-big" id="btnSubmitBar" onclick="submitChecklist()">✓ Done — Submit</button>
       <button type="button" class="btn btn-outline" onclick="window.print()">Save PDF</button>
       <button type="button" class="btn btn-outline" onclick="sendWhatsApp()">WhatsApp</button>
-      <button type="button" class="btn btn-ghost" onclick="resetForm()">Reset</button>
+      <button type="button" class="btn btn-ghost" id="btnReset" onclick="resetForm()">Reset</button>
     </div>
   </div>
 </div>
@@ -1113,7 +1201,7 @@
 <div class="modal-backdrop" id="successModal">
   <div class="modal-card">
     <div class="modal-icon">✓</div>
-    <h3>Checklist Submitted!</h3>
+    <h3 id="modalTitle">Checklist Submitted!</h3>
     <p id="modalMsg">Thank you! Your completed requirements checklist and attached files have been sent directly to the designer.</p>
     <div class="modal-warn" id="modalSizeWarn"></div>
     <div class="modal-actions">
@@ -1129,8 +1217,165 @@
 <script src="/blob-client.js"></script>
 <script>
   const STORAGE_KEY = 'digitagen_checklist_v2';
+  const STORAGE_KEY_LOCK = 'digitagen_checklist_lock_v1';
   const form = document.getElementById('checklistForm');
   const todayISO = new Date().toISOString().split('T')[0];
+
+  // Post-submit lock state (persisted so page refresh stays locked)
+  let lockState = {
+    locked: false,
+    finalized: false,
+    submissionId: null,
+    version: 0,
+    submittedAt: null,
+    updatedAt: null,
+    serverFiles: [],
+    clientSigPathname: null,
+  };
+  let clientSigDirty = false;
+
+  function loadLockState() {
+    if (window.location.hash && window.location.hash.startsWith('#s=')) return;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_LOCK);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.submissionId) {
+          lockState = {
+            locked: Boolean(parsed.locked),
+            finalized: Boolean(parsed.finalized),
+            submissionId: parsed.submissionId,
+            version: Number(parsed.version) || 1,
+            submittedAt: parsed.submittedAt || null,
+            updatedAt: parsed.updatedAt || null,
+            serverFiles: Array.isArray(parsed.serverFiles) ? parsed.serverFiles : [],
+            clientSigPathname: parsed.clientSigPathname || null,
+          };
+        }
+      }
+    } catch (e) {}
+  }
+
+  function saveLockState() {
+    try {
+      if (lockState.submissionId) {
+        localStorage.setItem(STORAGE_KEY_LOCK, JSON.stringify(lockState));
+      } else {
+        localStorage.removeItem(STORAGE_KEY_LOCK);
+      }
+    } catch (e) {}
+  }
+
+  function fmtLocalTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleString('en-MY', { dateStyle: 'medium', timeStyle: 'short' });
+    } catch { return iso; }
+  }
+
+  function applyLockUI() {
+    const isLocked = lockState.locked;
+    const hasSubmitted = Boolean(lockState.submissionId);
+    form.classList.toggle('is-locked', isLocked);
+
+    // Disable/enable all interactive inputs inside the checklist form (except banner buttons!)
+    form.querySelectorAll('input, textarea, select').forEach(el => {
+      el.disabled = isLocked;
+    });
+
+    const banner = document.getElementById('lockedBanner');
+    const badge = document.getElementById('lockedBadge');
+    const info = document.getElementById('lockedInfo');
+    const btnUnlock = document.getElementById('btnUnlockEdit');
+    const btnCancel = document.getElementById('btnCancelEdit');
+    const btnBar = document.getElementById('btnSubmitBar');
+    const btnInl = document.getElementById('btnSubmitInline');
+    const btnReset = document.getElementById('btnReset');
+    const inlTitle = document.getElementById('inlineSubmitTitle');
+    const inlDesc = document.getElementById('inlineSubmitDesc');
+
+    if (hasSubmitted) {
+      banner.classList.add('show');
+      const vLabel = lockState.version > 1 ? `v${lockState.version}` : 'v1';
+      const timeStr = fmtLocalTime(lockState.updatedAt || lockState.submittedAt);
+
+      if (isLocked) {
+        banner.classList.remove('is-editing');
+        if (lockState.finalized) {
+          badge.textContent = `✓ Finalized & Dual-Signed (${vLabel}) — Locked`;
+          info.textContent = `Ref: ${lockState.submissionId}${timeStr ? ' · ' + timeStr : ''}. Counter-signed by the designer. Please WhatsApp +60 18-207 1132 for any further changes.`;
+          if (btnUnlock) btnUnlock.style.display = 'none';
+        } else {
+          badge.textContent = `✓ Checklist Submitted & Locked (${vLabel})`;
+          info.textContent = `Ref: ${lockState.submissionId}${timeStr ? ' · Saved ' + timeStr : ''}. Locked to prevent accidental clicks. You can still Save PDF or click Unlock to Edit if needed.`;
+          if (btnUnlock) btnUnlock.style.display = 'inline-flex';
+        }
+        if (btnCancel) btnCancel.style.display = 'none';
+        if (btnBar) { btnBar.disabled = true; btnBar.classList.add('btn-locked-state'); btnBar.textContent = '✓ Submitted (Locked)'; }
+        if (btnInl) { btnInl.disabled = true; btnInl.classList.add('btn-locked-state'); btnInl.textContent = '✓ Checklist Submitted & Locked'; }
+        if (btnReset) btnReset.disabled = true;
+        if (inlTitle) inlTitle.textContent = 'Checklist submitted & locked';
+        if (inlDesc) inlDesc.textContent = lockState.finalized
+          ? 'This checklist has been counter-signed and finalized by the designer.'
+          : 'Your answers and files are saved safely. Need to change something? Click "Unlock to Edit" at the top of the page.';
+        document.getElementById('saveState').textContent = `Submitted & locked (${vLabel}) · Ref ${lockState.submissionId}`;
+      } else {
+        banner.classList.add('is-editing');
+        badge.textContent = `Editing Unlocked — Updating Ref ${lockState.submissionId}`;
+        info.textContent = 'Make your changes or attach additional files below, then click "Submit Updated Checklist" to save and re-lock.';
+        if (btnUnlock) btnUnlock.style.display = 'none';
+        if (btnCancel) btnCancel.style.display = 'inline-flex';
+        if (btnBar) { btnBar.disabled = false; btnBar.classList.remove('btn-locked-state'); btnBar.textContent = '✓ Submit Update'; }
+        if (btnInl) { btnInl.disabled = false; btnInl.classList.remove('btn-locked-state'); btnInl.textContent = '✓ Submit Updated Checklist'; }
+        if (btnReset) btnReset.disabled = true;
+        if (inlTitle) inlTitle.textContent = 'Ready to save your changes?';
+        if (inlDesc) inlDesc.textContent = 'Previously uploaded files are preserved automatically. Click below to update your submission and re-lock.';
+        document.getElementById('saveState').textContent = `Editing submission ${lockState.submissionId} — click Submit Updated Checklist when done`;
+      }
+    } else {
+      banner.classList.remove('show', 'is-editing');
+      if (btnBar) { btnBar.disabled = false; btnBar.classList.remove('btn-locked-state'); btnBar.textContent = '✓ Done — Submit'; }
+      if (btnInl) { btnInl.disabled = false; btnInl.classList.remove('btn-locked-state'); btnInl.textContent = '✓ Done — Submit Checklist'; }
+      if (btnReset) btnReset.disabled = false;
+      if (inlTitle) inlTitle.textContent = 'Finished filling out the checklist?';
+      if (inlDesc) inlDesc.textContent = 'Click Done to send your selections, signature and attached files directly to the designer.';
+    }
+
+    Object.keys(FILE_SLOTS).forEach(renderSlotChips);
+    updateFileCounter();
+  }
+
+  function unlockForEdit() {
+    if (lockState.finalized) {
+      showToast('Already counter-signed — please WhatsApp designer');
+      return;
+    }
+    const ok = confirm(
+      'Unlock this checklist to edit your answers or attach more files?\n\n' +
+      'Your previously uploaded files are already saved. Click "Submit Updated Checklist" when done to save your updates and lock the form again.'
+    );
+    if (!ok) return;
+    lockState.locked = false;
+    saveLockState();
+    applyLockUI();
+    showToast('Checklist unlocked for editing');
+  }
+
+  function relockForm() {
+    if (!lockState.submissionId) return;
+    lockState.locked = true;
+    saveLockState();
+    applyLockUI();
+    showToast('Checklist re-locked');
+  }
+
+  function removeServerFile(pathname) {
+    if (lockState.locked) return;
+    lockState.serverFiles = lockState.serverFiles.filter(f => f.pathname !== pathname);
+    saveLockState();
+    Object.keys(FILE_SLOTS).forEach(renderSlotChips);
+    updateFileCounter();
+  }
 
   // Store lightweight signature strokes (normalized 0..300 x 0..92) for localStorage & Counter-Sign Link
   const sigStrokes = { sigClient: [], sigDesigner: [] };
@@ -1154,11 +1399,13 @@
   }
 
   function triggerUpload(slot) {
+    if (lockState.locked) return;
     const inp = document.getElementById('up_' + slot);
     if (inp) inp.click();
   }
 
   function addFilesToSlot(slot, fileList) {
+    if (lockState.locked) return;
     if (!fileList || !fileList.length) return;
     Array.from(fileList).forEach(file => {
       const exists = attachedFiles[slot].some(f => f.name === file.name && f.size === file.size);
@@ -1175,6 +1422,7 @@
   }
 
   function removeFileFromSlot(slot, idx) {
+    if (lockState.locked) return;
     attachedFiles[slot].splice(idx, 1);
     renderSlotChips(slot);
     updateFileCounter();
@@ -1185,6 +1433,38 @@
     const box = document.getElementById('chips_' + slot);
     if (!box) return;
     box.innerHTML = '';
+
+    // 1. Render previously uploaded cloud files for this slot
+    const prevList = (lockState.serverFiles || []).filter(f => f.slot === slot);
+    prevList.forEach(sf => {
+      const chip = document.createElement('span');
+      chip.className = 'file-chip is-uploaded';
+      const tag = document.createElement('span');
+      tag.className = 'file-chip-tag';
+      tag.textContent = '✓ Saved';
+      const nm = document.createElement('span');
+      nm.className = 'file-chip-name';
+      nm.title = sf.name;
+      nm.textContent = sf.name;
+      const sz = document.createElement('span');
+      sz.className = 'file-chip-size';
+      sz.textContent = formatBytes(sf.size || 0);
+      chip.appendChild(tag);
+      chip.appendChild(nm);
+      chip.appendChild(sz);
+      if (!lockState.locked) {
+        const rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'file-chip-rm';
+        rm.title = 'Remove from updated submission';
+        rm.innerHTML = '&times;';
+        rm.onclick = (e) => { e.preventDefault(); e.stopPropagation(); removeServerFile(sf.pathname); };
+        chip.appendChild(rm);
+      }
+      box.appendChild(chip);
+    });
+
+    // 2. Render newly attached local files waiting to upload
     attachedFiles[slot].forEach((file, idx) => {
       const chip = document.createElement('span');
       chip.className = 'file-chip';
@@ -1215,7 +1495,9 @@
   }
 
   function totalAttachedCount() {
-    return Object.values(attachedFiles).reduce((sum, list) => sum + list.length, 0);
+    const localN = Object.values(attachedFiles).reduce((sum, list) => sum + list.length, 0);
+    const serverN = (lockState.serverFiles || []).length;
+    return localN + serverN;
   }
 
   function updateFileCounter() {
@@ -1464,7 +1746,9 @@
   function saveState() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
-      document.getElementById('saveState').textContent = 'Saved automatically';
+      if (!lockState.submissionId) {
+        document.getElementById('saveState').textContent = 'Saved automatically';
+      }
     } catch (e) {}
     updateRowHighlights();
   }
@@ -1493,6 +1777,7 @@
   }
 
   function resetForm() {
+    if (lockState.locked || lockState.submissionId) return;
     if (!confirm('Reset all fields back to the default checklist (Design 1 pre-selected)?')) return;
     localStorage.removeItem(STORAGE_KEY);
     if (window.location.hash) history.replaceState(null, '', window.location.pathname);
@@ -1613,6 +1898,11 @@
   }
 
   async function submitChecklist() {
+    if (lockState.locked) {
+      showToast('Already submitted & locked — click "Unlock to Edit" above to change');
+      return;
+    }
+
     const btnBar = document.getElementById('btnSubmitBar');
     const btnInl = document.getElementById('btnSubmitInline');
     const progWrap = document.getElementById('uploadProgWrap');
@@ -1633,10 +1923,11 @@
     try {
       saveState();
 
-      const submissionId = `dig_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-      const uploadedFiles = [];
+      const isEditUpdate = Boolean(lockState.submissionId);
+      const submissionId = lockState.submissionId || `dig_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      const newlyUploadedFiles = [];
 
-      // Gather all files to upload directly to Private Vercel Blob (supports up to 100 MB per file!)
+      // Gather newly added files to upload directly to Private Vercel Blob (up to 100 MB per file)
       const queue = [];
       Object.entries(FILE_SLOTS).forEach(([slot, meta]) => {
         attachedFiles[slot].forEach(file => {
@@ -1644,7 +1935,8 @@
         });
       });
 
-      const sigBlob = await canvasToPngBlob('sigClient');
+      const shouldUploadSig = (!lockState.clientSigPathname || clientSigDirty);
+      const sigBlob = shouldUploadSig ? await canvasToPngBlob('sigClient') : null;
       const totalSteps = queue.length + (sigBlob ? 1 : 0) + 1;
       let doneSteps = 0;
 
@@ -1664,7 +1956,7 @@
           },
         });
 
-        uploadedFiles.push({
+        newlyUploadedFiles.push({
           slot: item.slot,
           slotLabel: item.slotLabel,
           name: item.file.name,
@@ -1675,7 +1967,7 @@
         doneSteps++;
       }
 
-      let clientSigPathname = null;
+      let clientSigPathname = lockState.clientSigPathname || null;
       if (sigBlob) {
         setProgress((doneSteps / totalSteps) * 100, 'Saving signature...');
         const sigRes = await window.VercelBlob.upload(
@@ -1684,10 +1976,15 @@
           { access: 'private', handleUploadUrl: '/api/upload' }
         );
         clientSigPathname = sigRes.pathname;
+        clientSigDirty = false;
         doneSteps++;
+      } else if (!sigStrokes.sigClient.length) {
+        clientSigPathname = null;
       }
 
-      setProgress(92, 'Saving checklist to database...');
+      const mergedFiles = [...(lockState.serverFiles || []), ...newlyUploadedFiles];
+
+      setProgress(92, isEditUpdate ? 'Saving updated checklist...' : 'Saving checklist to database...');
 
       const v = id => (document.getElementById(id)?.value || '').trim();
       const rad = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '';
@@ -1752,7 +2049,7 @@
           date: v('f_sig_client_date'),
           pathname: clientSigPathname,
         },
-        files: uploadedFiles,
+        files: mergedFiles,
       };
 
       const resp = await fetch('/api/submit', {
@@ -1761,24 +2058,51 @@
         body: JSON.stringify(payload),
       });
       const resJson = await resp.json().catch(() => ({}));
+      if (resp.status === 409 && resJson.locked) {
+        lockState.locked = true;
+        lockState.finalized = true;
+        saveLockState();
+        applyLockUI();
+        alert(resJson.error || 'This checklist has already been counter-signed and locked.');
+        return;
+      }
       if (!resp.ok || !resJson.ok) {
         throw new Error(resJson.error || 'Could not save checklist');
       }
 
-      setProgress(100, 'Saved!');
-      const fNote = uploadedFiles.length > 0
-        ? ` along with ${uploadedFiles.length} uploaded ${uploadedFiles.length === 1 ? 'file' : 'files'}`
+      // Clear local pending queue since everything is now stored in Private Blob
+      Object.keys(FILE_SLOTS).forEach(k => { attachedFiles[k] = []; });
+
+      // Immediately lock the form so Digitagen cannot accidentally misclick or double-submit!
+      lockState = {
+        locked: true,
+        finalized: false,
+        submissionId: resJson.id || submissionId,
+        version: resJson.version || 1,
+        submittedAt: resJson.submittedAt || lockState.submittedAt || new Date().toISOString(),
+        updatedAt: resJson.updatedAt || null,
+        serverFiles: Array.isArray(resJson.files) ? resJson.files : mergedFiles,
+        clientSigPathname: resJson.clientSigPathname || clientSigPathname,
+      };
+      saveLockState();
+      applyLockUI();
+
+      setProgress(100, 'Saved & Locked!');
+      const totalF = lockState.serverFiles.length;
+      const fNote = totalF > 0
+        ? ` along with ${totalF} uploaded ${totalF === 1 ? 'file' : 'files'}`
         : '';
       document.getElementById('modalSizeWarn').style.display = 'none';
-      document.getElementById('modalMsg').textContent = `Thank you! Your completed requirements checklist${fNote} has been saved securely (Ref: ${submissionId}) and the designer has been notified.`;
+      const mTitle = document.getElementById('modalTitle');
+      if (mTitle) mTitle.textContent = resJson.isUpdate ? `Checklist Updated (v${lockState.version})!` : 'Checklist Submitted!';
+      document.getElementById('modalMsg').textContent = `Thank you! Your completed requirements checklist${fNote} has been saved securely (Ref: ${lockState.submissionId}) and locked to prevent accidental changes. The designer has been notified.`;
       document.getElementById('successModal').classList.add('open');
     } catch (err) {
       console.error('Submit error:', err);
       showToast('Upload error — please retry');
       alert('Could not submit right now: ' + (err?.message || 'Network error') + '. Please try again or use WhatsApp.');
     } finally {
-      if (btnBar) { btnBar.disabled = false; btnBar.textContent = '✓ Done — Submit'; }
-      if (btnInl) { btnInl.disabled = false; btnInl.textContent = '✓ Done — Submit Checklist'; }
+      applyLockUI();
       if (progWrap) setTimeout(() => progWrap.classList.remove('active'), 1800);
     }
   }
@@ -1875,7 +2199,9 @@
       };
     }
     function start(e) {
+      if (lockState.locked) return;
       drawing = true;
+      if (canvasId === 'sigClient') clientSigDirty = true;
       ph.style.display = 'none';
       const p = getPos(e);
       curStroke = [[p.nx, p.ny]];
@@ -1885,7 +2211,7 @@
       ctx.moveTo(p.x, p.y);
     }
     function move(e) {
-      if (!drawing) return;
+      if (!drawing || lockState.locked) return;
       e.preventDefault();
       const p = getPos(e);
       if (lastPt && Math.hypot(p.x - lastPt.x, p.y - lastPt.y) < 3) return;
@@ -1910,7 +2236,9 @@
   }
 
   function clearSig(canvasId) {
+    if (lockState.locked) return;
     sigStrokes[canvasId] = [];
+    if (canvasId === 'sigClient') clientSigDirty = true;
     redrawSig(canvasId);
     saveState();
   }
@@ -1921,6 +2249,8 @@
   initSig('sigDesigner');
   initUploadSlots();
   loadState();
+  loadLockState();
+  applyLockUI();
   checkSubmittedBanner();
   window.addEventListener('resize', () => { redrawSig('sigClient'); redrawSig('sigDesigner'); });
 </script>
