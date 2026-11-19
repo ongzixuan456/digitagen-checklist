@@ -588,6 +588,8 @@
         <div class="sec-t">7. Content · 8. Marketing · 9. After Launch · 10. Timeline</div>
         <div class="kv">
           <div class="kv-k">Content Ready</div><div class="kv-v">${renderTagList(s.contentSent)}</div>
+          ${s.contentDetails?.businessHours ? `<div class="kv-k">Business Hours</div><div class="kv-v">${esc(s.contentDetails.businessHours)}</div>` : ''}
+          ${s.contentDetails?.socialLinks ? `<div class="kv-k">Social Media Links</div><div class="kv-v">${esc(s.contentDetails.socialLinks)}</div>` : ''}
           <div class="kv-k">Google &amp; Marketing</div><div class="kv-v">${renderTagList(s.marketing)}</div>
           <div class="kv-k">After Launch Plan</div><div class="kv-v">${esc(s.afterLaunch?.plan || '-')}${s.afterLaunch?.updatePerson ? ' · Approver: ' + esc(s.afterLaunch.updatePerson) : ''}</div>
           <div class="kv-k">Target Launch Date</div><div class="kv-v">${esc(s.timeline?.targetLaunchDate || '-')}</div>

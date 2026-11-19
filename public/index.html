@@ -748,7 +748,8 @@
     </div>
     <div class="top-meta">
       <b>Company website project</b><br>
-      Interactive Requirements Checklist
+      Interactive Requirements Checklist<br>
+      <span style="font-size:11px;">Designer: +60 18-207 1132 · ongzixuan123@gmail.com</span>
     </div>
   </div>
 
@@ -1077,8 +1078,14 @@
         <div class="file-chips" id="chips_certificates"></div>
       </div>
 
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Business hours"><div><div class="row-title"><b>Business hours</b></div><div class="row-sub">e.g. Mon–Fri, 9:00 am – 6:00 pm</div></div></div></label>
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Social media links"><div><div class="row-title"><b>Social media links</b></div><div class="row-sub">Facebook, Instagram, TikTok (if any)</div></div></div></label>
+      <div class="check-row">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_biz_hours" name="content_sent" value="Business hours"><div><div class="row-title"><b>Business hours</b></div><div class="row-sub">e.g. Mon–Fri, 9:00 am – 6:00 pm</div></div></label>
+        <input class="input" id="f_biz_hours" name="biz_hours" placeholder="Type business hours (optional)" style="padding:6px 10px;font-size:12px;" oninput="if(this.value.trim())document.getElementById('chk_biz_hours').checked=true;">
+      </div>
+      <div class="check-row">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_social_links" name="content_sent" value="Social media links"><div><div class="row-title"><b>Social media links</b></div><div class="row-sub">Facebook, Instagram, TikTok (if any)</div></div></label>
+        <input class="input" id="f_social_links" name="social_links" placeholder="Paste FB / IG / TikTok links (optional)" style="padding:6px 10px;font-size:12px;" oninput="if(this.value.trim())document.getElementById('chk_social_links').checked=true;">
+      </div>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="SSM registration number"><div><div class="row-title"><b>SSM registration number</b></div><div class="row-sub">For website footer &amp; .com.my domain</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Customer reviews / stockists"><div><div class="row-title"><b>Customer reviews / stockists</b></div><div class="row-sub">Real customers only, with permission</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Verified Company details"><div><div class="row-title"><b>Verify Company details</b></div><div class="row-sub">Confirm address, phone &amp; email above</div></div></div></label>
@@ -1885,7 +1892,8 @@
   function pingWhatsApp() {
     const contact = (document.getElementById('f_contact')?.value || 'Digitagen').trim();
     const design = form.querySelector('input[name="design_choice"]:checked')?.value || 'Design 1';
-    const msg = `Hi, we just submitted the Digitagen Website Requirements Checklist online (${design}). — ${contact}`;
+    const refPart = lockState.submissionId ? ` (Ref: ${lockState.submissionId})` : '';
+    const msg = `Hi, we just submitted the Digitagen Website Requirements Checklist online (${design})${refPart}. — ${contact}`;
     window.open(`https://wa.me/${DESIGNER_WA}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -2038,6 +2046,10 @@
           translationBy: rad('translation_by'),
         },
         contentSent: chks('content_sent'),
+        contentDetails: {
+          businessHours: v('f_biz_hours'),
+          socialLinks: v('f_social_links'),
+        },
         marketing: chks('marketing'),
         afterLaunch: {
           plan: rad('after_launch'),
@@ -2114,8 +2126,13 @@
   function checkSubmittedBanner() {}
 
   async function sendWhatsApp() {
+    if (lockState.submissionId) {
+      pingWhatsApp();
+      return;
+    }
     const text = buildSummaryText();
-    if (totalAttachedCount() > 0) {
+    const localCount = Object.values(attachedFiles).reduce((sum, list) => sum + list.length, 0);
+    if (localCount > 0) {
       await downloadZip(true);
       showToast('Downloaded Digitagen-Website-Assets.zip — drop it into WhatsApp!');
     }

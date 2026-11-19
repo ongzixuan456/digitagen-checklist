@@ -80,6 +80,7 @@ export async function POST(request) {
     ordering: payload.ordering || {},
     languages: payload.languages || {},
     contentSent: Array.isArray(payload.contentSent) ? payload.contentSent : [],
+    contentDetails: payload.contentDetails && typeof payload.contentDetails === 'object' ? payload.contentDetails : {},
     marketing: Array.isArray(payload.marketing) ? payload.marketing : [],
     afterLaunch: payload.afterLaunch || {},
     timeline: payload.timeline || {},
