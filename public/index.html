@@ -1155,17 +1155,17 @@
         <div class="field"><input class="input" id="f_sig_client_date" name="sig_client_date" type="date"></div>
       </div>
 
-      <div class="sig-card">
+      <div class="sig-card" id="designerSigCard" style="background:#FAF9F6;">
         <div class="sig-card-h">
           <span>Designer</span>
-          <button type="button" class="btn-clear-sig" onclick="clearSig('sigDesigner')">Clear signature</button>
+          <span style="font-size:11px;font-weight:600;color:#6B7280;">Counter-signed after submission</span>
         </div>
-        <div class="field"><input class="input" id="f_sig_designer_name" name="sig_designer_name" placeholder="Designer name"></div>
-        <div class="sig-canvas-wrap">
+        <div class="field"><input class="input" id="f_sig_designer_name" name="sig_designer_name" placeholder="Filled by Designer upon review" disabled style="background:#F4F4F0;cursor:not-allowed;"></div>
+        <div class="sig-canvas-wrap" style="pointer-events:none;background:#F4F4F0;">
           <canvas id="sigDesigner"></canvas>
-          <span class="sig-placeholder" id="sigDesignerPh">Sign here with mouse or finger</span>
+          <span class="sig-placeholder" id="sigDesignerPh">For Designer counter-signature</span>
         </div>
-        <div class="field"><input class="input" id="f_sig_designer_date" name="sig_designer_date" type="date"></div>
+        <div class="field"><input class="input" id="f_sig_designer_date" name="sig_designer_date" type="date" disabled style="background:#F4F4F0;cursor:not-allowed;"></div>
       </div>
     </div>
     <div class="inline-submit-wrap">
@@ -1278,9 +1278,13 @@
     const hasSubmitted = Boolean(lockState.submissionId);
     form.classList.toggle('is-locked', isLocked);
 
-    // Disable/enable all interactive inputs inside the checklist form (except banner buttons!)
+    // Disable/enable all interactive inputs inside the checklist form (keep Designer public box always read-only)
     form.querySelectorAll('input, textarea, select').forEach(el => {
-      el.disabled = isLocked;
+      if (el.id === 'f_sig_designer_name' || el.id === 'f_sig_designer_date') {
+        el.disabled = true;
+      } else {
+        el.disabled = isLocked;
+      }
     });
 
     const banner = document.getElementById('lockedBanner');
