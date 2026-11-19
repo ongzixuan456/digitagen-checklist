@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digitagen Checklist — Designer Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F3EF;
+    --surface: #FFFFFF;
+    --soft: #F7F7F4;
+    --ink: #111113;
+    --ink-2: #3F3F46;
+    --muted: #71717A;
+    --line: #E4E3DD;
+    --green: #15803D;
+    --green-bg: #DCFCE7;
+    --amber: #B45309;
+    --amber-bg: #FEF3C7;
+    --red: #B91C1C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  h1, h2, h3, .brand { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+
+  /* Login Gate */
+  .login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 34px 32px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 14px 36px rgba(17,17,19,0.06);
+  }
+  .brand { font-size: 17px; font-weight: 800; letter-spacing: 0.08em; }
+  .brand-sub { font-size: 9.5px; letter-spacing: 0.16em; color: var(--muted); font-weight: 600; margin-top: 3px; }
+  .login-card h1 { font-size: 21px; font-weight: 800; margin: 20px 0 6px; letter-spacing: -0.02em; }
+  .login-card p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 10px 12px;
+    border: 1px solid #D4D4D8;
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: var(--ink);
+  }
+  .input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(17,17,19,0.08); }
+  .btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 15px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--ink); color: #FFFFFF; }
+  .btn-green { background: var(--green); color: #FFFFFF; }
+  .btn-outline { background: #FFFFFF; color: var(--ink); border-color: #D4D4D8; }
+  .btn-outline:hover { background: var(--soft); }
+  .btn-danger { background: #FFFFFF; color: var(--red); border-color: #FECACA; }
+  .btn-danger:hover { background: #FEF2F2; }
+  .btn:disabled { opacity: 0.6; cursor: wait; }
+  .err-msg { color: var(--red); font-size: 12.5px; margin-top: 10px; display: none; }
+
+  /* Admin Shell */
+  .app { display: none; flex-direction: column; min-height: 100vh; }
+  .app.open { display: flex; }
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 13px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar-r { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .workspace {
+    max-width: 1280px;
+    width: 100%;
+    margin: 22px auto 48px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  /* Sidebar list */
+  .sidebar {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .side-head {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sub-list { display: flex; flex-direction: column; }
+  .sub-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid #EEEDE8;
+    cursor: pointer;
+    transition: background-color 0.12s;
+  }
+  .sub-item:last-child { border-bottom: none; }
+  .sub-item:hover { background: #FAF9F6; }
+  .sub-item.active { background: #F1F0EA; border-left: 3px solid var(--ink); padding-left: 13px; }
+  .sub-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .sub-co { font-weight: 700; font-size: 13.5px; color: var(--ink); }
+  .sub-meta { font-size: 12px; color: var(--muted); }
+  .pill {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill-wait { background: var(--amber-bg); color: var(--amber); }
+  .pill-done { background: var(--green-bg); color: var(--green); }
+
+  /* Detail Sheet */
+  .detail {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 34px 34px;
+    min-height: 520px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .empty-state h2 { color: var(--ink); font-size: 18px; margin-bottom: 6px; }
+
+  .det-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 20px;
+  }
+  .det-head h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .det-sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .det-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .sec { margin-top: 22px; }
+  .sec-t {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+  .kv {
+    display: grid;
+    grid-template-columns: 185px 1fr;
+    gap: 6px 14px;
+    font-size: 13.2px;
+  }
+  .kv-k { color: var(--muted); font-weight: 500; }
+  .kv-v { color: var(--ink); font-weight: 500; word-break: break-word; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 12px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    padding: 3px 9px;
+    border-radius: 5px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* Uploaded Files Grid */
+  .files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px;
+  }
+  .file-card {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 11px 12px;
+    background: #FAFAF8;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .file-thumb {
+    height: 110px;
+    background: #FFFFFF;
+    border: 1px solid #ECEBE6;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .file-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .file-ext { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+  .file-slot { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .file-name { font-size: 12.8px; font-weight: 600; color: var(--ink); word-break: break-all; }
+  .file-foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 4px; }
+  .file-sz { font-size: 11.5px; color: var(--muted); }
+
+  /* Signatures & Counter-Sign */
+  .sig-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 10px;
+  }
+  .sig-box {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 15px;
+    background: #FFFFFF;
+  }
+  .sig-box-h {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sig-img-wrap {
+    height: 96px;
+    background: #FAFAF8;
+    border: 1px solid #ECEBE6;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0 10px;
+    overflow: hidden;
+  }
+  .sig-img-wrap img { max-width: 96%; max-height: 90%; object-fit: contain; }
+  .sig-canvas-wrap {
+    height: 96px;
+    background: #FAFAF8;
+    border: 1.5px dashed #CBD5E1;
+    border-radius: 7px;
+    position: relative;
+    margin: 8px 0 10px;
+    overflow: hidden;
+  }
+  .sig-canvas-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+  .sig-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #A1A1AA; pointer-events: none; }
+  .sig-meta { font-size: 12.5px; color: var(--ink-2); }
+  .sig-meta b { color: var(--ink); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #FFFFFF; padding: 9px 18px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 600; display: none; z-index: 100;
+  }
+  .toast.show { display: block; }
+
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
+    .sig-pair { grid-template-columns: 1fr; }
+    .kv { grid-template-columns: 1fr; gap: 2px; }
+    .kv-k { margin-top: 6px; font-size: 11.5px; }
+  }
+
+  /* Clean Print-to-PDF of Dual-Signed Official Record */
+  @media print {
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: #FFFFFF; font-size: 11px; }
+    .topbar, .sidebar, .det-actions, .no-print, .toast { display: none !important; }
+    .workspace { display: block; max-width: none; margin: 0; padding: 0; }
+    .detail { border: none; padding: 0; }
+    .file-thumb { height: 70px; }
+    .sec { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-wrap" id="loginView">
+  <form class="login-card" onsubmit="doLogin(event)">
+    <div class="brand">DIGITAGEN</div>
+    <div class="brand-sub">SDN BHD · CHECKLIST ADMIN</div>
+    <h1>Designer Dashboard</h1>
+    <p>Enter your admin password to view Digitagen submissions, download uploaded files and counter-sign checklists.</p>
+    <input type="password" id="pwInput" class="input" placeholder="Admin password" required autofocus>
+    <button type="submit" class="btn btn-primary" id="btnLogin" style="width:100%;margin-top:12px;">Sign in</button>
+    <div class="err-msg" id="loginErr">Incorrect password. Please try again.</div>
+  </form>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="app" id="adminView">
+  <header class="topbar">
+    <div>
+      <div class="brand">DIGITAGEN · ADMIN</div>
+      <div class="brand-sub">WEBSITE CHECKLIST SUBMISSIONS &amp; FILES</div>
+    </div>
+    <div class="topbar-r">
+      <a href="/" class="btn btn-outline" target="_blank">Open Public Form ↗</a>
+      <button type="button" class="btn btn-outline" onclick="loadSubmissions()">Refresh</button>
+      <button type="button" class="btn btn-outline" onclick="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar">
+      <div class="side-head">
+        <span>Submissions</span>
+        <span id="subCount">0</span>
+      </div>
+      <div class="sub-list" id="subList"></div>
+    </aside>
+
+    <section class="detail" id="detailPane">
+      <div class="empty-state">
+        <h2>No submission selected</h2>
+        <p>Submitted checklists from Digitagen will appear on the left.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const PW_KEY = 'digitagen_admin_pw';
+  let adminPw = sessionStorage.getItem(PW_KEY) || '';
+  let submissions = [];
+  let activeId = null;
+  let designerHasDrawn = false;
+
+  function esc(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function formatBytes(n) {
+    if (!n) return '';
+    if (n < 1024) return n + ' B';
+    if (n < 1048576) return (n / 1024).toFixed(0) + ' KB';
+    return (n / 1048576).toFixed(1) + ' MB';
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '-';
+    try {
+      return new Date(iso).toLocaleString('en-MY', { dateStyle: 'medium', timeStyle: 'short' });
+    } catch { return iso; }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  async function doLogin(e) {
+    e.preventDefault();
+    const pw = document.getElementById('pwInput').value.trim();
+    const btn = document.getElementById('btnLogin');
+    const err = document.getElementById('loginErr');
+    err.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    try {
+      const resp = await fetch('/api/admin-submissions', { headers: { 'x-admin-password': pw } });
+      if (!resp.ok) {
+        err.style.display = 'block';
+        return;
+      }
+      const data = await resp.json();
+      adminPw = pw;
+      sessionStorage.setItem(PW_KEY, pw);
+      submissions = data.submissions || [];
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('adminView').classList.add('open');
+      renderSidebar();
+      if (submissions.length) selectSubmission(submissions[0].id);
+    } catch {
+      err.textContent = 'Network error. Please retry.';
+      err.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    }
+  }
+
+  function signOut() {
+    sessionStorage.removeItem(PW_KEY);
+    adminPw = '';
+    location.reload();
+  }
+
+  async function loadSubmissions() {
+    if (!adminPw) return;
+    const resp = await fetch('/api/admin-submissions', { headers: { 'x-admin-password': adminPw } });
+    if (resp.status === 401) { signOut(); return; }
+    const data = await resp.json();
+    submissions = data.submissions || [];
+    renderSidebar();
+    if (activeId && submissions.some(s => s.id === activeId)) {
+      selectSubmission(activeId);
+    } else if (submissions.length) {
+      selectSubmission(submissions[0].id);
+    } else {
+      document.getElementById('detailPane').innerHTML = '<div class="empty-state"><h2>No submissions yet</h2><p>Once Digitagen clicks Done on the public link, their checklist and files will show up here.</p></div>';
+    }
+  }
+
+  function renderSidebar() {
+    document.getElementById('subCount').textContent = submissions.length;
+    const list = document.getElementById('subList');
+    if (!submissions.length) {
+      list.innerHTML = '<div style="padding:20px 16px;color:var(--muted);font-size:13px;">No submissions yet.</div>';
+      return;
+    }
+    list.innerHTML = submissions.map(s => {
+      const isSigned = s.status === 'dual-signed';
+      const fCount = (s.files || []).length;
+      return `
+        <div class="sub-item ${s.id === activeId ? 'active' : ''}" onclick="selectSubmission('${esc(s.id)}')">
+          <div class="sub-top">
+            <span class="sub-co">${esc(s.company?.contactPerson || s.company?.name || 'Digitagen Sdn Bhd')}</span>
+            <span class="pill ${isSigned ? 'pill-done' : 'pill-wait'}">${isSigned ? '✓ Dual-Signed' : 'Pending Sign'}</span>
+          </div>
+          <div class="sub-meta">${esc(s.design?.choice || 'Design 1')} · ${fCount} ${fCount === 1 ? 'file' : 'files'}</div>
+          <div class="sub-meta" style="margin-top:2px;font-size:11.5px;">${esc(fmtDate(s.submittedAt))}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderTagList(arr) {
+    if (!arr || !arr.length) return '<span style="color:var(--muted);">None selected</span>';
+    return '<div class="tags">' + arr.map(x => `<span class="tag">${esc(x)}</span>`).join('') + '</div>';
+  }
+
+  function selectSubmission(id) {
+    activeId = id;
+    renderSidebar();
+    const s = submissions.find(x => x.id === id);
+    if (!s) return;
+
+    const isSigned = s.status === 'dual-signed';
+    const filesHtml = (s.files && s.files.length)
+      ? `<div class="files-grid">${s.files.map(f => {
+          const isImg = (f.contentType || '').startsWith('image/');
+          const ext = (f.name.split('.').pop() || 'FILE').slice(0, 5);
+          return `
+            <div class="file-card">
+              <div class="file-thumb">
+                ${isImg ? `<img src="${esc(f.previewUrl)}" alt="${esc(f.name)}">` : `<span class="file-ext">${esc(ext)}</span>`}
+              </div>
+              <div class="file-slot">${esc(f.slotLabel || f.slot)}</div>
+              <div class="file-name">${esc(f.name)}</div>
+              <div class="file-foot">
+                <span class="file-sz">${esc(formatBytes(f.size))}</span>
+                <a class="btn btn-outline no-print" style="padding:4px 10px;font-size:11.5px;" href="${esc(f.downloadUrl)}" download="${esc(f.name)}">Download</a>
+              </div>
+            </div>
+          `;
+        }).join('')}</div>`
+      : '<p style="color:var(--muted);font-size:13px;">No files were attached to this submission.</p>';
+
+    const todayISO = new Date().toISOString().split('T')[0];
+    const dName = s.designerSign?.name || '';
+    const dDate = s.designerSign?.date || todayISO;
+    const dImg = s.designerSign?.imageUrl;
+
+    document.getElementById('detailPane').innerHTML = `
+      <div class="det-head">
+        <div>
+          <h1>${esc(s.company?.name || 'Digitagen Sdn Bhd')} — Website Requirements</h1>
+          <div class="det-sub">Ref: <b>${esc(s.id)}</b> · Submitted ${esc(fmtDate(s.submittedAt))} · <span class="pill ${isSigned ? 'pill-done' : 'pill-wait'}">${isSigned ? '✓ Dual-Signed' : 'Awaiting Designer Counter-Sign'}</span></div>
+        </div>
+        <div class="det-actions no-print">
+          <button type="button" class="btn btn-primary" onclick="window.print()">Print / Save Final PDF</button>
+          <button type="button" class="btn btn-danger" onclick="deleteSubmission('${esc(s.id)}')">Delete</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">Company Details</div>
+        <div class="kv">
+          <div class="kv-k">Company</div><div class="kv-v">${esc(s.company?.name || '-')}</div>
+          <div class="kv-k">SSM Registration No.</div><div class="kv-v">${esc(s.company?.ssm || '-')}</div>
+          <div class="kv-k">Office Address</div><div class="kv-v">${esc(s.company?.address || '-')}</div>
+          <div class="kv-k">Contact Person</div><div class="kv-v">${esc(s.company?.contactPerson || '-')}</div>
+          <div class="kv-k">Mobile / WhatsApp</div><div class="kv-v">${esc(s.company?.mobile || '-')}</div>
+          <div class="kv-k">Tel / Email</div><div class="kv-v">${esc(s.company?.tel || '-')} · ${esc(s.company?.email || '-')}</div>
+          <div class="kv-k">Date Filled In</div><div class="kv-v">${esc(s.company?.dateFilled || '-')}</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">1. Design &amp; 2. Domain / Hosting</div>
+        <div class="kv">
+          <div class="kv-k">Chosen Design</div><div class="kv-v"><b>${esc(s.design?.choice || '-')}</b></div>
+          <div class="kv-k">Design Change Notes</div><div class="kv-v">${esc(s.design?.notes || 'None')}</div>
+          <div class="kv-k">Domain Status</div><div class="kv-v">${esc(s.domain?.status || '-')}${s.domain?.domainName ? ' — <b>' + esc(s.domain.domainName) + '</b>' : ''}</div>
+          ${s.domain?.registrar || s.domain?.loginHolder ? `<div class="kv-k">Registrar / Login</div><div class="kv-v">${esc(s.domain?.registrar || '-')} · ${esc(s.domain?.loginHolder || '-')}</div>` : ''}
+          ${s.domain?.hasEmail || s.domain?.hasSite ? `<div class="kv-k">Email / Existing Site</div><div class="kv-v">Email on domain: ${esc(s.domain?.hasEmail || '-')} · Website now: ${esc(s.domain?.hasSite || '-')}</div>` : ''}
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">3. Pages Selected</div>
+        ${renderTagList(s.pages)}
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">4. Products &amp; Prices · 5. Ordering · 6. Languages</div>
+        <div class="kv">
+          <div class="kv-k">Price Display</div><div class="kv-v">${esc(s.products?.priceDisplay || '-')}</div>
+          <div class="kv-k">Brands &amp; SKUs</div><div class="kv-v">${renderTagList(s.products?.brands)}</div>
+          <div class="kv-k">Specs Confirmed</div><div class="kv-v">${renderTagList(s.products?.confirmedSpecs)}</div>
+          <div class="kv-k">Ordering Features</div><div class="kv-v">${renderTagList(s.ordering?.features)}</div>
+          ${s.ordering?.altContact ? `<div class="kv-k">Alternate Contact</div><div class="kv-v">${esc(s.ordering.altContact)}</div>` : ''}
+          <div class="kv-k">Languages</div><div class="kv-v">${renderTagList(s.languages?.selected)}</div>
+          <div class="kv-k">Translations</div><div class="kv-v">${esc(s.languages?.translationBy || '-')}</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">Uploaded Files (${(s.files || []).length})</div>
+        ${filesHtml}
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">7. Content · 8. Marketing · 9. After Launch · 10. Timeline</div>
+        <div class="kv">
+          <div class="kv-k">Content Ready</div><div class="kv-v">${renderTagList(s.contentSent)}</div>
+          <div class="kv-k">Google &amp; Marketing</div><div class="kv-v">${renderTagList(s.marketing)}</div>
+          <div class="kv-k">After Launch Plan</div><div class="kv-v">${esc(s.afterLaunch?.plan || '-')}${s.afterLaunch?.updatePerson ? ' · Approver: ' + esc(s.afterLaunch.updatePerson) : ''}</div>
+          <div class="kv-k">Target Launch Date</div><div class="kv-v">${esc(s.timeline?.targetLaunchDate || '-')}</div>
+          <div class="kv-k">Design Approver</div><div class="kv-v">${esc(s.timeline?.designApprover || '-')}</div>
+          <div class="kv-k">Other Requests</div><div class="kv-v">${esc(s.timeline?.otherRequests || 'None')}</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-t">Signatures &amp; Counter-Sign</div>
+        <div class="sig-pair">
+          <div class="sig-box">
+            <div class="sig-box-h"><span>Digitagen Sdn Bhd</span></div>
+            <div class="sig-meta">Name: <b>${esc(s.clientSign?.name || '-')}</b></div>
+            <div class="sig-img-wrap">
+              ${s.clientSign?.imageUrl
+                ? `<img src="${esc(s.clientSign.imageUrl)}" alt="Digitagen signature">`
+                : '<span style="font-size:12px;color:var(--muted);">No drawn signature attached</span>'}
+            </div>
+            <div class="sig-meta">Date: <b>${esc(s.clientSign?.date || '-')}</b></div>
+          </div>
+
+          <div class="sig-box">
+            <div class="sig-box-h">
+              <span>Designer (Counter-Sign)</span>
+              ${dImg ? '<button type="button" class="btn btn-outline no-print" style="padding:2px 8px;font-size:11px;" onclick="showResignPad()">Re-sign</button>' : '<button type="button" class="btn btn-outline no-print" style="padding:2px 8px;font-size:11px;" onclick="clearDesignerSig()">Clear</button>'}
+            </div>
+            <div id="designerSignedView" style="display:${dImg ? 'block' : 'none'};">
+              <div class="sig-meta">Name: <b>${esc(dName || '-')}</b></div>
+              <div class="sig-img-wrap">${dImg ? `<img src="${esc(dImg)}" alt="Designer signature">` : ''}</div>
+              <div class="sig-meta">Date: <b>${esc(dDate || '-')}</b></div>
+            </div>
+            <div id="designerPadView" class="no-print" style="display:${dImg ? 'none' : 'block'};">
+              <input class="input" id="adm_d_name" value="${esc(dName)}" placeholder="Your name (Designer)" style="padding:7px 10px;font-size:12.5px;">
+              <div class="sig-canvas-wrap">
+                <canvas id="admSigCanvas"></canvas>
+                <span class="sig-ph" id="admSigPh">Sign here with mouse or finger</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input class="input" id="adm_d_date" type="date" value="${esc(dDate)}" style="padding:7px 10px;font-size:12.5px;flex:1;">
+                <button type="button" class="btn btn-green" id="btnSaveCS" onclick="saveCounterSign('${esc(s.id)}')">Save Counter-Sign</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    initDesignerCanvas();
+  }
+
+  function showResignPad() {
+    document.getElementById('designerSignedView').style.display = 'none';
+    document.getElementById('designerPadView').style.display = 'block';
+    initDesignerCanvas();
+  }
+
+  function initDesignerCanvas() {
+    const canvas = document.getElementById('admSigCanvas');
+    if (!canvas) return;
+    const ph = document.getElementById('admSigPh');
+    const ctx = canvas.getContext('2d');
+    designerHasDrawn = false;
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, rect.width || 280) * dpr;
+    canvas.height = Math.max(1, rect.height || 96) * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.strokeStyle = '#111113';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    let drawing = false;
+    const getPos = e => {
+      const r = canvas.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      return { x: pt.clientX - r.left, y: pt.clientY - r.top };
+    };
+    const start = e => {
+      drawing = true;
+      designerHasDrawn = true;
+      if (ph) ph.style.display = 'none';
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    };
+    const move = e => {
+      if (!drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    };
+    const end = () => { drawing = false; };
+
+    canvas.onmousedown = start;
+    canvas.onmousemove = move;
+    window.onmouseup = end;
+    canvas.ontouchstart = start;
+    canvas.ontouchmove = move;
+    window.ontouchend = end;
+  }
+
+  function clearDesignerSig() {
+    const canvas = document.getElementById('admSigCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    designerHasDrawn = false;
+    const ph = document.getElementById('admSigPh');
+    if (ph) ph.style.display = 'flex';
+  }
+
+  async function saveCounterSign(id) {
+    const btn = document.getElementById('btnSaveCS');
+    const name = document.getElementById('adm_d_name').value.trim();
+    const date = document.getElementById('adm_d_date').value.trim();
+    if (!name) { alert('Please enter your name first.'); return; }
+    if (!designerHasDrawn) { alert('Please draw your signature in the box first.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    try {
+      const dataUrl = document.getElementById('admSigCanvas').toDataURL('image/png');
+      const resp = await fetch('/api/admin-submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPw },
+        body: JSON.stringify({ id, designerName: name, designerDate: date, signatureDataUrl: dataUrl }),
+      });
+      const res = await resp.json();
+      if (!resp.ok || !res.ok) throw new Error(res.error || 'Could not save');
+      const idx = submissions.findIndex(x => x.id === id);
+      if (idx >= 0) submissions[idx] = res.submission;
+      selectSubmission(id);
+      showToast('Counter-signature saved! Click Print / Save Final PDF anytime.');
+    } catch (err) {
+      alert('Error saving signature: ' + err.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Save Counter-Sign'; }
+    }
+  }
+
+  async function deleteSubmission(id) {
+    if (!confirm('Permanently delete this submission and all its uploaded files?')) return;
+    const resp = await fetch(`/api/admin-submissions?id=${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-password': adminPw },
+    });
+    if (!resp.ok) { alert('Delete failed'); return; }
+    submissions = submissions.filter(s => s.id !== id);
+    activeId = submissions.length ? submissions[0].id : null;
+    renderSidebar();
+    if (activeId) selectSubmission(activeId);
+    else document.getElementById('detailPane').innerHTML = '<div class="empty-state"><h2>No submissions left</h2></div>';
+    showToast('Submission deleted');
+  }
+
+  // Auto-resume if already authenticated in this tab
+  if (adminPw) {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('adminView').classList.add('open');
+    loadSubmissions();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digitagen Sdn Bhd — Website Requirements Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F3EF;
+    --surface: #FFFFFF;
+    --surface-soft: #F7F7F4;
+    --ink: #111113;
+    --ink-2: #3F3F46;
+    --muted: #71717A;
+    --line: #E4E3DD;
+    --line-strong: #141416;
+    --green: #15803D;
+    --orange: #C2410C;
+    --accent: #111113;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 28px 16px 110px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, .brand-b {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 12px 36px rgba(17, 17, 19, 0.05);
+    padding: 40px 44px 44px;
+  }
+
+  /* Header */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .brand-b { font-size: 21px; font-weight: 800; letter-spacing: 0.08em; line-height: 1; }
+  .brand-s { font-size: 10px; letter-spacing: 0.16em; color: var(--muted); margin-top: 5px; font-weight: 600; }
+  .top-meta { text-align: right; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .top-meta b { color: var(--ink); font-weight: 600; }
+
+  .doc-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .doc-intro { color: var(--ink-2); font-size: 13.8px; margin-bottom: 12px; }
+  .save-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 8px;
+  }
+  .save-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+  /* Section Headings */
+  .section { margin-top: 30px; }
+  .sec-h {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--line-strong);
+    margin-bottom: 12px;
+  }
+  .sec-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sec-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+  .sec-note { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+  .sec-note b { color: var(--ink); }
+
+  /* Key-Value Form Grid */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+  .field-full { grid-column: 1 / -1; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 5px;
+  }
+  .input, textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: #FFFFFF;
+    border: 1px solid #D4D4D8;
+    border-radius: 7px;
+    padding: 9px 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(17, 17, 19, 0.08);
+  }
+  textarea { resize: vertical; min-height: 76px; }
+
+  /* Checklist Rows */
+  .col-hdr {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 10px 7px 38px;
+    border-bottom: 1px solid #D4D4D8;
+  }
+  .check-list { display: flex; flex-direction: column; }
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 10px;
+    border-bottom: 1px solid #EEEDE8;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.12s;
+  }
+  .check-row:hover { background: #FAF9F6; }
+  .check-row.is-checked { background: #F5F5F1; }
+
+  .check-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    flex: 1;
+    min-width: 0;
+  }
+  .check-row input[type="checkbox"],
+  .check-row input[type="radio"] {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: #111113;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .row-title { font-size: 13.5px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+  .row-title b { font-weight: 700; }
+  .row-sub { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.42; }
+
+  .sel-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: #FFFFFF;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: 1px;
+  }
+
+  .cost-tag {
+    width: 142px;
+    flex-shrink: 0;
+    font-size: 12.2px;
+    font-weight: 600;
+    padding-top: 1px;
+    text-align: left;
+  }
+  .cost-inc { color: var(--green); }
+  .cost-ext { color: var(--orange); }
+
+  .inline-input {
+    display: inline-block;
+    width: 240px;
+    max-width: 100%;
+    font-family: inherit;
+    font-size: 13px;
+    border: none;
+    border-bottom: 1.5px solid #A1A1AA;
+    background: transparent;
+    padding: 1px 4px;
+    margin-left: 6px;
+    color: var(--ink);
+  }
+  .inline-input:focus { outline: none; border-bottom-color: var(--ink); }
+
+  /* Two-Column Panels */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 12px;
+  }
+  .sub-panel {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 12px 14px;
+  }
+  .sub-h {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sub-panel .check-row { padding: 8px 4px; border-bottom-color: #E6E5DF; }
+  .sub-panel .check-row:last-child { border-bottom: none; }
+
+  .info-banner {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    margin-top: 12px;
+  }
+  .info-banner b { color: var(--ink); }
+
+  /* Domain sub-box */
+  .sub-fields {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: #FAF9F6;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+  }
+  .sub-fields-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 10px; }
+  .yn-group { display: flex; gap: 16px; padding-top: 6px; }
+  .yn-label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .yn-label input { width: 15px; height: 15px; accent-color: #111113; }
+
+  /* Section 7 2-col checklist */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+  }
+  .content-grid .check-row {
+    border: 1px solid #ECEBE6;
+    border-radius: 8px;
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* File Attachment Boxes & Inline Pickers */
+  .upload-zone {
+    margin-top: 12px;
+    border: 1.5px dashed #C7C6BE;
+    border-radius: 9px;
+    background: #FAFAF7;
+    padding: 13px 15px;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .upload-zone.drag-over {
+    border-color: var(--ink);
+    background: #F1F0EA;
+  }
+  .upload-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .upload-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .upload-hint { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .btn-attach {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: inherit;
+    font-size: 11.8px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #FFFFFF;
+    border: 1px solid #D4D4D8;
+    border-radius: 6px;
+    padding: 5.5px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.12s, border-color 0.12s;
+  }
+  .btn-attach:hover { background: #F4F3EF; border-color: #111113; }
+  .btn-attach-sm {
+    font-size: 11px;
+    padding: 4px 8px;
+    margin-left: 28px;
+    align-self: flex-start;
+  }
+  .file-input-hidden { display: none; }
+  .file-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .file-chips:empty { display: none; }
+  .content-grid .file-chips { margin-top: 2px; margin-left: 28px; }
+  .file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #DCDAD2;
+    border-radius: 6px;
+    padding: 3.5px 7px 3.5px 5px;
+    font-size: 11.2px;
+    color: var(--ink);
+    max-width: 100%;
+  }
+  .file-chip img {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid #E4E4E7;
+    flex-shrink: 0;
+  }
+  .file-chip-name {
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .file-chip-size { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+  .file-chip-rm {
+    border: none;
+    background: none;
+    color: #71717A;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+  }
+  .file-chip-rm:hover { color: #B91C1C; }
+  .btn-zip {
+    background: #1D4ED8;
+    color: #FFFFFF;
+  }
+  .btn-zip:disabled {
+    background: #E4E4E7;
+    color: #A1A1AA;
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  /* Signature Area */
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 14px;
+  }
+  .sig-card {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 14px;
+    background: #FFFFFF;
+  }
+  .sig-card-h {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sig-canvas-wrap {
+    border: 1px dashed #CBD5E1;
+    border-radius: 7px;
+    background: #FAFAF8;
+    height: 92px;
+    position: relative;
+    margin: 8px 0 10px;
+    overflow: hidden;
+  }
+  .sig-canvas-wrap canvas { width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+  .sig-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #A1A1AA;
+    pointer-events: none;
+  }
+  .btn-clear-sig {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .btn-clear-sig:hover { color: var(--ink); }
+
+  /* Sticky Floating Action Bar */
+  .action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    padding: 12px 18px;
+    z-index: 50;
+  }
+  .action-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .action-status { font-size: 12.5px; color: var(--muted); }
+  .action-status b { color: var(--ink); }
+  .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    font-family: inherit;
+    font-size: 12.8px;
+    font-weight: 600;
+    padding: 9px 15px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-primary { background: #111113; color: #FFFFFF; }
+  .btn-wa { background: #15803D; color: #FFFFFF; }
+  .btn-outline { background: #FFFFFF; color: var(--ink); border-color: #D4D4D8; }
+  .btn-outline:hover { background: #F4F3EF; }
+  .btn-ghost { background: transparent; color: var(--muted); font-size: 12px; padding: 8px 10px; }
+  .btn-ghost:hover { color: #B91C1C; }
+
+  .btn-submit-big {
+    background: #15803D;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+  .btn-submit-big:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+  .inline-submit-wrap {
+    margin-top: 22px;
+    padding: 18px 20px;
+    background: #F5F5F1;
+    border: 1px solid #DCDAD2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .inline-submit-text b { display: block; font-size: 14px; color: var(--ink); }
+  .inline-submit-text span { font-size: 12.2px; color: var(--muted); }
+
+  /* Success Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 17, 19, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 200;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    max-width: 460px;
+    width: 100%;
+    padding: 28px 26px 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  .modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #DCFCE7;
+    color: #15803D;
+    font-size: 24px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .modal-card h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .modal-card p { font-size: 13.2px; color: var(--ink-2); line-height: 1.55; margin-bottom: 16px; }
+  .modal-warn {
+    background: #FEF3C7;
+    border: 1px solid #FDE68A;
+    color: #92400E;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 16px;
+    text-align: left;
+    display: none;
+  }
+  .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+  .modal-actions .btn { width: 100%; justify-content: center; padding: 10px 14px; }
+
+  .upload-prog-wrap {
+    width: 100%;
+    margin-top: 10px;
+    display: none;
+  }
+  .upload-prog-wrap.active { display: block; }
+  .upload-prog-bar {
+    height: 6px;
+    background: #E4E4E7;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 5px;
+  }
+  .upload-prog-fill {
+    height: 100%;
+    width: 0%;
+    background: #15803D;
+    transition: width 0.15s ease;
+  }
+  .upload-prog-txt { font-size: 11.5px; color: var(--ink-2); font-weight: 500; }
+
+  .toast {
+    position: fixed;
+    bottom: 76px;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: #111113;
+    color: #FFFFFF;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Responsive Mobile */
+  @media (max-width: 720px) {
+    body { padding: 12px 10px 146px; }
+    .sheet { padding: 20px 16px 24px; border-radius: 10px; }
+    .top-meta { text-align: left; }
+    .doc-title { font-size: 22px; }
+    .field-grid, .two-col, .content-grid, .sig-grid { grid-template-columns: 1fr; }
+    .col-hdr { display: none; }
+    .check-row { flex-direction: column; gap: 4px; }
+    .cost-tag { width: auto; padding-left: 28px; }
+    .inline-input { width: 100%; margin-left: 0; margin-top: 4px; }
+    .action-inner { flex-direction: column; align-items: stretch; gap: 8px; }
+    .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .btn { justify-content: center; padding: 9px 8px; font-size: 12px; }
+    .btn-ghost { grid-column: 1 / -1; padding: 4px; }
+  }
+
+  /* Clean Print-to-PDF Styles */
+  @media print {
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: #FFFFFF; padding: 0; font-size: 11px; }
+    .sheet { border: none; box-shadow: none; padding: 0; max-width: none; }
+    .action-bar, .save-pill, .btn-clear-sig, .toast, .btn-attach, .file-chip-rm, .inline-submit-wrap, .modal-backdrop { display: none !important; }
+    .section { break-inside: avoid; }
+    .input, textarea { border: 1px solid #D4D4D8; padding: 5px 8px; font-size: 11px; }
+    .check-row { padding: 6px 6px; }
+    .upload-zone { padding: 8px 10px; border-style: solid; }
+  }
+</style>
+</head>
+<body>
+
+<form class="sheet" id="checklistForm" onsubmit="return false;">
+  <div class="top-bar">
+    <div>
+      <div class="brand-b">DIGITAGEN</div>
+      <div class="brand-s">SDN BHD · MALAYSIA</div>
+    </div>
+    <div class="top-meta">
+      <b>Company website project</b><br>
+      Interactive Requirements Checklist
+    </div>
+  </div>
+
+  <h1 class="doc-title">Website Requirements Checklist</h1>
+  <p class="doc-intro">Tick everything Digitagen wants on the new website and type notes directly below. Items marked <b>Extra cost</b> are quoted separately; <b>Included</b> items are part of the base website quotation.</p>
+  <div class="save-pill"><span class="save-dot"></span><span id="saveState">Auto-saved in browser · Design 1 pre-selected</span></div>
+
+  <!-- COMPANY DETAILS -->
+  <section class="section" style="margin-top:18px;">
+    <div class="sec-h">
+      <span class="sec-num">·</span>
+      <span class="sec-title">Company details</span>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label for="f_company">Company</label>
+        <input class="input" id="f_company" name="company" value="Digitagen Sdn Bhd">
+      </div>
+      <div class="field">
+        <label for="f_ssm">SSM registration no.</label>
+        <input class="input" id="f_ssm" name="ssm" placeholder="e.g. 201901012345 (1234567-X)">
+      </div>
+      <div class="field field-full">
+        <label for="f_address">Office address</label>
+        <textarea id="f_address" name="address" rows="2" style="min-height:54px;">Unit G-07-19, Sunway Geo Avenue, Jalan Lagoon Selatan, Sunway South Quay, Bandar Sunway, 47500 Subang Jaya, Selangor</textarea>
+      </div>
+      <div class="field">
+        <label for="f_contact">Contact person</label>
+        <input class="input" id="f_contact" name="contact_person" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label for="f_mobile">Mobile / WhatsApp</label>
+        <input class="input" id="f_mobile" name="mobile" value="+6012 379 5582">
+      </div>
+      <div class="field">
+        <label for="f_tel">Tel</label>
+        <input class="input" id="f_tel" name="tel" value="1700 818 505">
+      </div>
+      <div class="field">
+        <label for="f_email">Email</label>
+        <input class="input" id="f_email" name="email" type="email" value="penny.chaw@q-lite.my">
+      </div>
+      <div class="field">
+        <label for="f_date">Date filled in</label>
+        <input class="input" id="f_date" name="date_filled" type="date">
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. DESIGN -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">1</span>
+      <span class="sec-title">Design</span>
+    </div>
+    <p class="sec-note">Choose one homepage direction (<b>Design 1</b> is pre-selected as confirmed). Page numbers refer to <b>Digitagen-Main-Page-Designs.pdf</b>. All three options share the same inner pages: Catalogue, Product Pages &amp; Wholesale Quote Form (<b>Digitagen-Inner-Pages-Design.pdf</b>, pages 1–6).</p>
+    <div class="col-hdr"><span>Design Direction</span></div>
+    <div class="check-list">
+      <label class="check-row is-checked">
+        <div class="check-left">
+          <input type="radio" name="design_choice" value="Design 1 · Brand Slider" checked>
+          <div>
+            <div class="row-title"><b>Design 1 · Brand Slider</b> <span class="sel-badge" id="d1Badge">Selected</span></div>
+            <div class="row-sub">Clean black-and-white homepage with single-frame auto-sliding carousel, borderless in-image labels, side arrows &amp; dots (Main Page PDF, pages 2–4).</div>
+          </div>
+        </div>
+      </label>
+      <label class="check-row">
+        <div class="check-left">
+          <input type="radio" name="design_choice" value="Design 2 · Showcase">
+          <div>
+            <div class="row-title"><b>Design 2 · Showcase</b></div>
+            <div class="row-sub">Bright grey studio tabletop hero (“Brighten up your shelves.”) with product highlights &amp; PRODUCTS band (Main Page PDF, pages 5–6).</div>
+          </div>
+        </div>
+      </label>
+      <label class="check-row">
+        <div class="check-left">
+          <input type="radio" name="design_choice" value="Design 3 · Modern Flagship">
+          <div>
+            <div class="row-title"><b>Design 3 · Modern Flagship</b></div>
+            <div class="row-sub">Contemporary white &amp; soft-grey 3-brand studio gallery displaying Q-LITE, Merry Brite &amp; Urai side by side (Main Page PDF, pages 7–8).</div>
+          </div>
+        </div>
+      </label>
+    </div>
+    <div class="field" style="margin-top:12px;">
+      <label for="f_design_notes">Changes wanted to the chosen design (colours, photos, wording)</label>
+      <textarea id="f_design_notes" name="design_notes" placeholder="Type any requested tweaks to colours, product photos, or text..."></textarea>
+    </div>
+  </section>
+
+  <!-- 2. DOMAIN & HOSTING -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">2</span>
+      <span class="sec-title">Website address (domain) &amp; hosting</span>
+    </div>
+    <p class="sec-note">A domain is the address people type to reach the website, such as <b>digitagen.com.my</b>. Existing company email is not changed by the website work.</p>
+    <div class="check-list">
+      <label class="check-row">
+        <div class="check-left">
+          <input type="radio" name="domain_status" value="Already own a domain">
+          <div>
+            <div class="row-title">We already own a domain: <input class="inline-input" id="f_domain_name" name="domain_name" placeholder="e.g. digitagen.com.my" onclick="event.stopPropagation();"></div>
+            <div class="row-sub">It will be connected to the new website.</div>
+          </div>
+        </div>
+      </label>
+      <label class="check-row">
+        <div class="check-left">
+          <input type="radio" name="domain_status" value="Please register a new domain (digitagen.com.my)">
+          <div>
+            <div class="row-title">We don’t have one; please register one for us</div>
+            <div class="row-sub">Suggested: digitagen.com.my. Registered in Digitagen’s name (requires SSM registration no.); annual renewal paid by Digitagen.</div>
+          </div>
+        </div>
+      </label>
+      <label class="check-row">
+        <div class="check-left">
+          <input type="radio" name="domain_status" value="Not sure — designer to check">
+          <div>
+            <div class="row-title">Not sure</div>
+            <div class="row-sub">The designer will check domain availability and ownership for you.</div>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <div class="sub-fields">
+      <div class="sub-fields-title">If you already own a domain, please also fill in:</div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="f_registrar">Where was it bought? (e.g. Exabytes, Shinjiru)</label>
+          <input class="input" id="f_registrar" name="domain_registrar" placeholder="Registrar name">
+        </div>
+        <div class="field">
+          <label for="f_login_holder">Who holds the login?</label>
+          <input class="input" id="f_login_holder" name="domain_login_holder" placeholder="Person or vendor">
+        </div>
+        <div class="field">
+          <label>Is company email on this domain?</label>
+          <div class="yn-group">
+            <label class="yn-label"><input type="radio" name="domain_has_email" value="Yes"> Yes</label>
+            <label class="yn-label"><input type="radio" name="domain_has_email" value="No"> No</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Is there a website on it now?</label>
+          <div class="yn-group">
+            <label class="yn-label"><input type="radio" name="domain_has_site" value="Yes"> Yes</label>
+            <label class="yn-label"><input type="radio" name="domain_has_site" value="No"> No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-banner">
+      <b>Web hosting &amp; SSL certificate:</b> Standard hosting and HTTPS/SSL setup are included for launch; ongoing annual domain &amp; hosting renewals (after Year 1) are billed yearly to Digitagen or hosted on Digitagen’s preferred account.
+    </div>
+  </section>
+
+  <!-- 3. PAGES -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">3</span>
+      <span class="sec-title">Pages</span>
+    </div>
+    <p class="sec-note">Tick every page the website should include.</p>
+    <div class="col-hdr"><span>Page</span><span style="width:142px;">Cost</span></div>
+    <div class="check-list">
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Homepage — Design 1 · Brand Slider" checked><div class="row-title">Homepage — Design 1 · Brand Slider (auto-sliding showcase of all three brands)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="All products catalogue with brand filter" checked><div class="row-title">All products catalogue, with brand filter (All, Q-LITE, Merry Brite, Urai)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Brand pages (Q-LITE, Merry Brite, Urai)" checked><div class="row-title">Brand pages: Q-LITE, Merry Brite, Urai</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Product pages covering all 9 products (with variant switches)" checked><div class="row-title">Product pages covering all 9 products (with size / variant switches)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Wholesale quote form (WhatsApp & Email)" checked><div class="row-title">Wholesale quote form (WhatsApp &amp; Email submission)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="About us"><div class="row-title">About us (added to top navigation once company story is provided)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Contact page with Google Map" checked><div class="row-title">Contact page with Google Map</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Privacy notice (PDPA)" checked><div class="row-title">Privacy notice (PDPA), recommended because the quote form collects names &amp; phones</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="FAQ (ordering, delivery, minimum order) [Extra cost]"><div class="row-title">FAQ (ordering, delivery, minimum order)</div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Become a dealer / reseller enquiry [Extra cost]"><div class="row-title">Become a dealer / reseller enquiry</div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="News or promotions [Extra cost]"><div class="row-title">News or promotions</div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Careers [Extra cost]"><div class="row-title">Careers</div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="pages" value="Other page"><div class="row-title">Other: <input class="inline-input" id="f_other_page" name="other_page" placeholder="Specify page..." onclick="event.stopPropagation();"></div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+    </div>
+  </section>
+
+  <!-- 4. PRODUCTS & PRICES -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">4</span>
+      <span class="sec-title">Products and prices</span>
+    </div>
+    <p class="sec-note">Wholesale prices are never shown publicly on the website; trade buyers receive them by quotation.</p>
+    <div class="two-col">
+      <div class="sub-panel">
+        <div class="sub-h"><span>Prices on the website</span></div>
+        <label class="check-row"><div class="check-left"><input type="radio" name="price_display" value="Show recommended retail price (RSP)" checked><div class="row-title">Show the recommended retail price (RSP) for each product</div></div></label>
+        <label class="check-row"><div class="check-left"><input type="radio" name="price_display" value="Hide all prices — show Price on request"><div class="row-title">Hide all prices; show “Price on request” instead</div></div></label>
+      </div>
+      <div class="sub-panel">
+        <div class="sub-h"><span>Still needed from Digitagen</span></div>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="needed_items" value="Q-LITE specs, barcodes & RSP confirmed"><div class="row-title">Q-LITE: lighter size, carton size &amp; weight, barcodes, and RSP (or confirm “Price on request”)</div></div></label>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="needed_items" value="Urai RSP RM 5.50 / RM 4.20 confirmed"><div class="row-title">Urai: confirm RSP RM 5.50 (Mi Telur) and RM 4.20 (Corn Vermicelli) from RCP column</div></div></label>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="needed_items" value="Urai serving ideas & highlights confirmed"><div class="row-title">Urai: confirm serving ideas &amp; pack highlights text</div></div></label>
+      </div>
+    </div>
+
+    <div class="col-hdr"><span>Brands and Products</span><span style="width:142px;">Cost</span></div>
+    <div class="check-list">
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Q-LITE (Silk Logo Disposable Lighter & with Wrapper)" checked><div class="row-title"><b>Q-LITE</b> — Q-Lite Silk Logo Disposable Lighter · Q-Lite Silk Logo Disposable Lighter with Wrapper</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Merry Brite (B0003, B0005, Twins T0003, T0005)" checked><div class="row-title"><b>Merry Brite</b> — Scouring Pad B0003 · B0005 · Twins T0003 · T0005</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Urai (Mi Telur Original, Flat, Corn Vermicelli)" checked><div class="row-title"><b>Urai</b> — Mi Telur Original · Mi Telur Flat · Corn Vermicelli (Bihun Jagung)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Other brands/products"><div class="row-title">Other brands or products to add: <input class="inline-input" id="f_other_brands" name="other_brands" placeholder="Specify brand / SKU..." onclick="event.stopPropagation();"></div></div><span class="cost-tag cost-ext">Extra cost / product</span></label>
+    </div>
+
+    <div class="upload-zone" data-slot="pricing_specs">
+      <div class="upload-head">
+        <div>
+          <div class="upload-title">Attach price list, Q-LITE specs or catalogue files</div>
+          <div class="upload-hint">Drop or select PDF, Excel, Word or images (e.g. Q-LITE dimensions, barcodes, RSP/quotation sheet).</div>
+        </div>
+        <button type="button" class="btn-attach" onclick="triggerUpload('pricing_specs')">+ Attach files</button>
+      </div>
+      <input type="file" class="file-input-hidden" id="up_pricing_specs" multiple accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg,.webp">
+      <div class="file-chips" id="chips_pricing_specs"></div>
+    </div>
+  </section>
+
+  <!-- 5. ORDERING & CONTACT -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">5</span>
+      <span class="sec-title">Ordering and contact</span>
+    </div>
+    <div class="col-hdr"><span>Feature</span><span style="width:142px;">Cost</span></div>
+    <div class="check-list">
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Quote list by WhatsApp to +6012 379 5582" checked><div class="row-title">Send the quote list by WhatsApp to +6012 379 5582</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Quote list by email to penny.chaw@q-lite.my" checked><div class="row-title">Send the quote list by email to penny.chaw@q-lite.my</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="WhatsApp button on every page" checked><div class="row-title">WhatsApp button on every page</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Tap-to-call 1700 818 505" checked><div class="row-title">Tap-to-call 1700 818 505</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Google Map of Sunway Geo Avenue office" checked><div class="row-title">Google Map of the Sunway Geo Avenue office</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Online shop with payment (FPX, card) [Extra cost]"><div class="row-title">Online shop with payment (FPX, card)</div></div><span class="cost-tag cost-ext">Extra cost, quoted separately</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="ordering" value="Customer login to see wholesale prices [Extra cost]"><div class="row-title">Customer login to see wholesale prices</div></div><span class="cost-tag cost-ext">Extra cost, quoted separately</span></label>
+    </div>
+    <div class="field" style="margin-top:12px;">
+      <label for="f_alt_contact">Send quotes to a different WhatsApp number or email?</label>
+      <input class="input" id="f_alt_contact" name="alt_quote_contact" placeholder="Optional alternate WhatsApp number or email address">
+    </div>
+  </section>
+
+  <!-- 6. LANGUAGES -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">6</span>
+      <span class="sec-title">Languages</span>
+    </div>
+    <p class="sec-note">If only English is ticked, the EN / BM / 中文 switch is removed at launch. Adding Bahasa Melayu or 中文 carries a multi-language setup fee even when Digitagen supplies the text; hiring a translator is quoted separately.</p>
+    <div class="two-col">
+      <div class="sub-panel">
+        <div class="sub-h"><span>Language</span><span>Cost</span></div>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="languages" value="English" checked><div class="row-title">English</div></div><span class="cost-inc" style="font-size:12px;font-weight:600;">Included</span></label>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="languages" value="Bahasa Melayu [Extra cost]"><div class="row-title">Bahasa Melayu</div></div><span class="cost-ext" style="font-size:12px;font-weight:600;">Extra cost</span></label>
+        <label class="check-row"><div class="check-left"><input type="checkbox" name="languages" value="中文 (Chinese) [Extra cost]"><div class="row-title">中文 (Chinese)</div></div><span class="cost-ext" style="font-size:12px;font-weight:600;">Extra cost</span></label>
+      </div>
+      <div class="sub-panel">
+        <div class="sub-h"><span>Who writes the translations</span></div>
+        <label class="check-row"><div class="check-left"><input type="radio" name="translation_by" value="Digitagen provides BM & 中文 text"><div class="row-title">Digitagen provides the BM and 中文 text</div></div></label>
+        <label class="check-row"><div class="check-left"><input type="radio" name="translation_by" value="Designer arranges translations (additional fee)"><div class="row-title">Designer arranges the translations; Digitagen checks them (additional translation fee)</div></div></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CONTENT DIGITAGEN WILL SEND -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">7</span>
+      <span class="sec-title">Content Digitagen will send</span>
+    </div>
+    <p class="sec-note">Attach logos, photos or documents directly below (up to 100 MB per file, multiple files supported). Everything uploads securely to cloud storage when you click <b>Done — Submit</b>.</p>
+    <div class="content-grid">
+      <div class="check-row" data-slot="digitagen_logo">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_digitagen_logo" name="content_sent" value="Digitagen logo"><div><div class="row-title"><b>Digitagen logo</b></div><div class="row-sub">AI, SVG, PDF or high-res PNG</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('digitagen_logo')">+ Attach logo</button>
+        <input type="file" class="file-input-hidden" id="up_digitagen_logo" multiple accept=".ai,.svg,.eps,.pdf,.png,.jpg,.jpeg,.webp">
+        <div class="file-chips" id="chips_digitagen_logo"></div>
+      </div>
+
+      <div class="check-row" data-slot="brand_logos">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_brand_logos" name="content_sent" value="Q-LITE, Merry Brite & Urai logos"><div><div class="row-title"><b>Q-LITE, Merry Brite &amp; Urai logos</b></div><div class="row-sub">AI, SVG, PDF or high-res PNG</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('brand_logos')">+ Attach brand logos</button>
+        <input type="file" class="file-input-hidden" id="up_brand_logos" multiple accept=".ai,.svg,.eps,.pdf,.png,.jpg,.jpeg,.webp">
+        <div class="file-chips" id="chips_brand_logos"></div>
+      </div>
+
+      <div class="check-row" data-slot="company_story">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_company_story" name="content_sent" value="Company story for About us"><div><div class="row-title"><b>Company story for About us</b></div><div class="row-sub">Year started, products, areas served</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('company_story')">+ Attach Word / PDF</button>
+        <input type="file" class="file-input-hidden" id="up_company_story" multiple accept=".doc,.docx,.pdf,.txt">
+        <div class="file-chips" id="chips_company_story"></div>
+      </div>
+
+      <div class="check-row" data-slot="product_photos">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_product_photos" name="content_sent" value="Product photos"><div><div class="row-title"><b>Product photos</b></div><div class="row-sub">High-res originals &amp; any updated packs</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('product_photos')">+ Attach photos</button>
+        <input type="file" class="file-input-hidden" id="up_product_photos" multiple accept="image/*,.pdf,.zip">
+        <div class="file-chips" id="chips_product_photos"></div>
+      </div>
+
+      <div class="check-row" data-slot="certificates">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_certificates" name="content_sent" value="Certificates or approvals"><div><div class="row-title"><b>Certificates or approvals</b></div><div class="row-sub">e.g. SIRIM, Halal, ISO (if applicable)</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('certificates')">+ Attach certificates</button>
+        <input type="file" class="file-input-hidden" id="up_certificates" multiple accept=".pdf,image/*">
+        <div class="file-chips" id="chips_certificates"></div>
+      </div>
+
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Business hours"><div><div class="row-title"><b>Business hours</b></div><div class="row-sub">e.g. Mon–Fri, 9:00 am – 6:00 pm</div></div></div></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Social media links"><div><div class="row-title"><b>Social media links</b></div><div class="row-sub">Facebook, Instagram, TikTok (if any)</div></div></div></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="SSM registration number"><div><div class="row-title"><b>SSM registration number</b></div><div class="row-sub">For website footer &amp; .com.my domain</div></div></div></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Customer reviews / stockists"><div><div class="row-title"><b>Customer reviews / stockists</b></div><div class="row-sub">Real customers only, with permission</div></div></div></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Verified Company details"><div><div class="row-title"><b>Verify Company details</b></div><div class="row-sub">Confirm address, phone &amp; email above</div></div></div></label>
+    </div>
+  </section>
+
+  <!-- 8. GOOGLE & MARKETING -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">8</span>
+      <span class="sec-title">Google and marketing</span>
+    </div>
+    <div class="col-hdr"><span>Item</span><span style="width:142px;">Cost</span></div>
+    <div class="check-list">
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="marketing" value="On-page SEO (titles & descriptions)" checked><div class="row-title">Page titles and descriptions for Google search (on-page SEO)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="marketing" value="Google Search Console & sitemap" checked><div class="row-title">Google Search Console set-up and sitemap submission</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="marketing" value="Visitor statistics" checked><div class="row-title">Visitor statistics (how many people visit, which pages)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="marketing" value="Google Business Profile link" checked><div class="row-title">Link to your Google Business Profile (Google Maps listing)</div></div><span class="cost-tag cost-inc">Included</span></label>
+      <label class="check-row"><div class="check-left"><input type="checkbox" name="marketing" value="Facebook / TikTok ad tracking pixel [Extra cost]"><div class="row-title">Facebook or TikTok ad tracking (pixel)</div></div><span class="cost-tag cost-ext">Extra cost</span></label>
+    </div>
+  </section>
+
+  <!-- 9. AFTER LAUNCH -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">9</span>
+      <span class="sec-title">After launch</span>
+    </div>
+    <p class="sec-note">The site is custom-coded for speed and reliability, so updates such as new prices or products are handled by the designer unless a self-editing CMS is added.</p>
+    <div class="check-list">
+      <label class="check-row"><div class="check-left"><input type="radio" name="after_launch" value="Monthly care plan"><div class="row-title">Monthly care plan: small edits, price changes and regular security checks</div></div></label>
+      <label class="check-row"><div class="check-left"><input type="radio" name="after_launch" value="Pay per change"><div class="row-title">Pay per change, only when something needs updating</div></div></label>
+      <label class="check-row"><div class="check-left"><input type="radio" name="after_launch" value="Self-editing CMS [Extra cost]"><div class="row-title">Digitagen staff edit the site themselves (requires content editing system, extra cost)</div></div></label>
+    </div>
+    <div class="field" style="margin-top:12px;">
+      <label for="f_update_person">Person who sends and approves updates</label>
+      <input class="input" id="f_update_person" name="update_person" placeholder="Full name">
+    </div>
+  </section>
+
+  <!-- 10. TIMELINE & SIGN-OFF -->
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-num">10</span>
+      <span class="sec-title">Timeline and sign-off</span>
+    </div>
+    <p class="sec-note">Work starts after this checklist is signed and the deposit is paid. Includes up to <b>2 rounds of design revisions</b> before launch. The website typically goes live <b>2–3 weeks</b> after design and content are confirmed.</p>
+    <div class="field-grid">
+      <div class="field">
+        <label for="f_target_date">Target launch date</label>
+        <input class="input" id="f_target_date" name="target_launch_date" type="date">
+      </div>
+      <div class="field">
+        <label for="f_approver">Person who approves the design</label>
+        <input class="input" id="f_approver" name="design_approver" placeholder="Full name">
+      </div>
+      <div class="field field-full">
+        <label for="f_other_req">Other requests or notes</label>
+        <textarea id="f_other_req" name="other_requests" placeholder="Any extra deadlines, brand guidelines, or special notes..."></textarea>
+      </div>
+    </div>
+
+    <div class="sig-grid">
+      <div class="sig-card">
+        <div class="sig-card-h">
+          <span>Digitagen Sdn Bhd</span>
+          <button type="button" class="btn-clear-sig" onclick="clearSig('sigClient')">Clear signature</button>
+        </div>
+        <div class="field"><input class="input" id="f_sig_client_name" name="sig_client_name" placeholder="Full name"></div>
+        <div class="sig-canvas-wrap">
+          <canvas id="sigClient"></canvas>
+          <span class="sig-placeholder" id="sigClientPh">Sign here with mouse or finger</span>
+        </div>
+        <div class="field"><input class="input" id="f_sig_client_date" name="sig_client_date" type="date"></div>
+      </div>
+
+      <div class="sig-card">
+        <div class="sig-card-h">
+          <span>Designer</span>
+          <button type="button" class="btn-clear-sig" onclick="clearSig('sigDesigner')">Clear signature</button>
+        </div>
+        <div class="field"><input class="input" id="f_sig_designer_name" name="sig_designer_name" placeholder="Designer name"></div>
+        <div class="sig-canvas-wrap">
+          <canvas id="sigDesigner"></canvas>
+          <span class="sig-placeholder" id="sigDesignerPh">Sign here with mouse or finger</span>
+        </div>
+        <div class="field"><input class="input" id="f_sig_designer_date" name="sig_designer_date" type="date"></div>
+      </div>
+    </div>
+    <div class="inline-submit-wrap">
+      <div class="inline-submit-text">
+        <b>Finished filling out the checklist?</b>
+        <span>Click Done to send your selections, signature and attached files directly to the designer.</span>
+      </div>
+      <button type="button" class="btn btn-submit-big" id="btnSubmitInline" onclick="submitChecklist()">✓ Done — Submit Checklist</button>
+      <div class="upload-prog-wrap" id="uploadProgWrap">
+        <div class="upload-prog-bar"><div class="upload-prog-fill" id="uploadProgFill"></div></div>
+        <div class="upload-prog-txt" id="uploadProgTxt">Preparing upload...</div>
+      </div>
+    </div>
+  </section>
+</form>
+
+<!-- STICKY ACTION BAR -->
+<div class="action-bar">
+  <div class="action-inner">
+    <div class="action-status">
+      <b id="selectedSummary">Design 1 · Brand Slider</b> · <span id="checkedCount">0</span> ticked · <span id="fileCount">0 files</span>
+    </div>
+    <div class="action-btns">
+      <button type="button" class="btn btn-submit-big" id="btnSubmitBar" onclick="submitChecklist()">✓ Done — Submit</button>
+      <button type="button" class="btn btn-outline" onclick="window.print()">Save PDF</button>
+      <button type="button" class="btn btn-outline" onclick="sendWhatsApp()">WhatsApp</button>
+      <button type="button" class="btn btn-ghost" onclick="resetForm()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMISSION CONFIRMATION MODAL -->
+<div class="modal-backdrop" id="successModal">
+  <div class="modal-card">
+    <div class="modal-icon">✓</div>
+    <h3>Checklist Submitted!</h3>
+    <p id="modalMsg">Thank you! Your completed requirements checklist and attached files have been sent directly to the designer.</p>
+    <div class="modal-warn" id="modalSizeWarn"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" onclick="closeModal(); window.print();">Save / Print PDF Copy for Your Records</button>
+      <button type="button" class="btn btn-wa" onclick="pingWhatsApp()">Send Quick Confirmation on WhatsApp (Optional)</button>
+      <button type="button" class="btn btn-outline" onclick="closeModal()">Back to Checklist</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script src="/blob-client.js"></script>
+<script>
+  const STORAGE_KEY = 'digitagen_checklist_v2';
+  const form = document.getElementById('checklistForm');
+  const todayISO = new Date().toISOString().split('T')[0];
+
+  // Store lightweight signature strokes (normalized 0..300 x 0..92) for localStorage & Counter-Sign Link
+  const sigStrokes = { sigClient: [], sigDesigner: [] };
+
+  // Store attached files per slot (in-memory File objects for clean .zip bundling + manifest)
+  const FILE_SLOTS = {
+    pricing_specs:  { label: 'Pricing & Specs',    folder: '01-Pricing-and-Specs', chkId: null },
+    digitagen_logo: { label: 'Digitagen Logo',     folder: '02-Digitagen-Logo',    chkId: 'chk_digitagen_logo' },
+    brand_logos:    { label: 'Brand Logos',        folder: '03-Brand-Logos',       chkId: 'chk_brand_logos' },
+    company_story:  { label: 'Company Story',      folder: '04-Company-Story',     chkId: 'chk_company_story' },
+    product_photos: { label: 'Product Photos',     folder: '05-Product-Photos',    chkId: 'chk_product_photos' },
+    certificates:   { label: 'Certificates',       folder: '06-Certificates',      chkId: 'chk_certificates' },
+  };
+  const attachedFiles = {};
+  Object.keys(FILE_SLOTS).forEach(k => { attachedFiles[k] = []; });
+
+  function formatBytes(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1048576) return (n / 1024).toFixed(0) + ' KB';
+    return (n / 1048576).toFixed(1) + ' MB';
+  }
+
+  function triggerUpload(slot) {
+    const inp = document.getElementById('up_' + slot);
+    if (inp) inp.click();
+  }
+
+  function addFilesToSlot(slot, fileList) {
+    if (!fileList || !fileList.length) return;
+    Array.from(fileList).forEach(file => {
+      const exists = attachedFiles[slot].some(f => f.name === file.name && f.size === file.size);
+      if (!exists) attachedFiles[slot].push(file);
+    });
+    const chkId = FILE_SLOTS[slot].chkId;
+    if (chkId && attachedFiles[slot].length) {
+      const chk = document.getElementById(chkId);
+      if (chk) chk.checked = true;
+    }
+    renderSlotChips(slot);
+    updateFileCounter();
+    saveState();
+  }
+
+  function removeFileFromSlot(slot, idx) {
+    attachedFiles[slot].splice(idx, 1);
+    renderSlotChips(slot);
+    updateFileCounter();
+    saveState();
+  }
+
+  function renderSlotChips(slot) {
+    const box = document.getElementById('chips_' + slot);
+    if (!box) return;
+    box.innerHTML = '';
+    attachedFiles[slot].forEach((file, idx) => {
+      const chip = document.createElement('span');
+      chip.className = 'file-chip';
+      if (file.type && file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = '';
+        chip.appendChild(img);
+      }
+      const nm = document.createElement('span');
+      nm.className = 'file-chip-name';
+      nm.title = file.name;
+      nm.textContent = file.name;
+      const sz = document.createElement('span');
+      sz.className = 'file-chip-size';
+      sz.textContent = formatBytes(file.size);
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'file-chip-rm';
+      rm.title = 'Remove file';
+      rm.innerHTML = '&times;';
+      rm.onclick = (e) => { e.preventDefault(); e.stopPropagation(); removeFileFromSlot(slot, idx); };
+      chip.appendChild(nm);
+      chip.appendChild(sz);
+      chip.appendChild(rm);
+      box.appendChild(chip);
+    });
+  }
+
+  function totalAttachedCount() {
+    return Object.values(attachedFiles).reduce((sum, list) => sum + list.length, 0);
+  }
+
+  function updateFileCounter() {
+    const n = totalAttachedCount();
+    const fc = document.getElementById('fileCount');
+    if (fc) fc.textContent = n === 1 ? '1 file' : `${n} files`;
+    const btn = document.getElementById('btnZip');
+    if (btn) {
+      btn.disabled = n === 0;
+      btn.textContent = n > 0 ? `Download Files (${n}) .zip` : 'Download Files (.zip)';
+    }
+  }
+
+  function initUploadSlots() {
+    Object.keys(FILE_SLOTS).forEach(slot => {
+      const inp = document.getElementById('up_' + slot);
+      if (inp) {
+        inp.addEventListener('change', () => {
+          addFilesToSlot(slot, inp.files);
+          inp.value = '';
+        });
+      }
+      const zone = document.querySelector(`[data-slot="${slot}"]`);
+      if (zone) {
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', e => {
+          e.preventDefault();
+          zone.classList.remove('drag-over');
+          addFilesToSlot(slot, e.dataTransfer.files);
+        });
+      }
+    });
+    updateFileCounter();
+  }
+
+  // Zero-dependency PKZIP (STORE) builder so all attached files + summary bundle into 1 crisp .zip!
+  const CRC_TABLE = (() => {
+    const t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[i] = c >>> 0;
+    }
+    return t;
+  })();
+
+  function crc32(bytes) {
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  async function buildZipBlob() {
+    const entries = [];
+    const enc = new TextEncoder();
+
+    // Include readable checklist summary text inside the zip
+    entries.push({
+      name: 'Digitagen-Checklist-Summary.txt',
+      data: enc.encode(buildSummaryText()),
+    });
+
+    // Include Digitagen handwritten signature PNG inside the zip if signed
+    const sigPng = await canvasToPngBlob('sigClient');
+    if (sigPng) {
+      entries.push({
+        name: 'Digitagen-Signature.png',
+        data: new Uint8Array(await sigPng.arrayBuffer()),
+      });
+    }
+
+    for (const [slot, list] of Object.entries(attachedFiles)) {
+      const folder = FILE_SLOTS[slot].folder;
+      for (const file of list) {
+        const buf = new Uint8Array(await file.arrayBuffer());
+        entries.push({ name: `${folder}/${file.name}`, data: buf });
+      }
+    }
+
+    const parts = [];
+    const central = [];
+    let offset = 0;
+
+    for (const entry of entries) {
+      const nameBytes = enc.encode(entry.name);
+      const data = entry.data;
+      const crc = crc32(data);
+
+      const lh = new ArrayBuffer(30);
+      const lv = new DataView(lh);
+      lv.setUint32(0, 0x04034b50, true); // Local file header signature
+      lv.setUint16(4, 20, true);         // Version needed
+      lv.setUint16(6, 0x0800, true);     // UTF-8 flag
+      lv.setUint16(8, 0, true);          // Method: STORE
+      lv.setUint16(10, 0, true);         // Mod time
+      lv.setUint16(12, 0x5421, true);    // Mod date
+      lv.setUint32(14, crc, true);
+      lv.setUint32(18, data.length, true);
+      lv.setUint32(22, data.length, true);
+      lv.setUint16(26, nameBytes.length, true);
+      lv.setUint16(28, 0, true);
+
+      parts.push(new Uint8Array(lh), nameBytes, data);
+
+      const cd = new ArrayBuffer(46);
+      const cv = new DataView(cd);
+      cv.setUint32(0, 0x02014b50, true); // Central directory signature
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0x0800, true);
+      cv.setUint16(10, 0, true);
+      cv.setUint16(12, 0, true);
+      cv.setUint16(14, 0x5421, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, data.length, true);
+      cv.setUint32(24, data.length, true);
+      cv.setUint16(28, nameBytes.length, true);
+      cv.setUint16(30, 0, true);
+      cv.setUint16(32, 0, true);
+      cv.setUint16(34, 0, true);
+      cv.setUint16(36, 0, true);
+      cv.setUint32(38, 0, true);
+      cv.setUint32(42, offset, true);
+
+      central.push(new Uint8Array(cd), nameBytes);
+      offset += 30 + nameBytes.length + data.length;
+    }
+
+    const cdSize = central.reduce((s, b) => s + b.length, 0);
+    const eocd = new ArrayBuffer(22);
+    const ev = new DataView(eocd);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(4, 0, true);
+    ev.setUint16(6, 0, true);
+    ev.setUint16(8, entries.length, true);
+    ev.setUint16(10, entries.length, true);
+    ev.setUint32(12, cdSize, true);
+    ev.setUint32(16, offset, true);
+    ev.setUint16(20, 0, true);
+
+    return new Blob([...parts, ...central, new Uint8Array(eocd)], { type: 'application/zip' });
+  }
+
+  async function downloadZip(silentToast) {
+    const n = totalAttachedCount();
+    if (n === 0) {
+      showToast('Attach at least one file first');
+      return;
+    }
+    const blob = await buildZipBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Digitagen-Website-Assets.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    if (!silentToast) showToast(`Downloaded Digitagen-Website-Assets.zip (${n} files)`);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function updateRowHighlights() {
+    document.querySelectorAll('.check-row').forEach(row => {
+      const inp = row.querySelector('input[type="checkbox"], input[type="radio"]');
+      if (inp) row.classList.toggle('is-checked', inp.checked);
+    });
+    const chosen = form.querySelector('input[name="design_choice"]:checked');
+    const chosenText = chosen ? chosen.value : 'No design selected';
+    document.getElementById('selectedSummary').textContent = chosenText;
+    const badge = document.getElementById('d1Badge');
+    if (badge) badge.style.display = (chosen && chosen.value.startsWith('Design 1')) ? 'inline-block' : 'none';
+    const checkedN = form.querySelectorAll('input[type="checkbox"]:checked').length;
+    document.getElementById('checkedCount').textContent = checkedN;
+  }
+
+  function collectState() {
+    const data = { i: {}, c: [], r: {}, s: {} };
+    form.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]), textarea').forEach(el => {
+      if (el.id && el.value.trim() !== '') data.i[el.id] = el.value;
+    });
+    form.querySelectorAll('input[type="checkbox"]').forEach((el, idx) => {
+      if (el.checked) data.c.push(idx);
+    });
+    form.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+      data.r[el.name] = el.value;
+    });
+    if (sigStrokes.sigClient.length) data.s.c = sigStrokes.sigClient;
+    if (sigStrokes.sigDesigner.length) data.s.d = sigStrokes.sigDesigner;
+    return data;
+  }
+
+  function applyState(data) {
+    if (!data) return;
+    // Reset checkboxes first so unchecked defaults stay unchecked when loading shared link
+    form.querySelectorAll('input[type="checkbox"]').forEach(el => { el.checked = false; });
+    Object.entries(data.i || {}).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
+    const cSet = new Set(data.c || []);
+    form.querySelectorAll('input[type="checkbox"]').forEach((el, idx) => {
+      if (cSet.has(idx)) el.checked = true;
+    });
+    Object.entries(data.r || {}).forEach(([name, val]) => {
+      const r = form.querySelector(`input[type="radio"][name="${name}"][value="${CSS.escape(val)}"]`);
+      if (r) r.checked = true;
+    });
+    sigStrokes.sigClient = (data.s && data.s.c) ? data.s.c : [];
+    sigStrokes.sigDesigner = (data.s && data.s.d) ? data.s.d : [];
+    redrawSig('sigClient');
+    redrawSig('sigDesigner');
+    updateRowHighlights();
+  }
+
+  function encodeStateToHash(data) {
+    const json = JSON.stringify(data);
+    const bytes = new TextEncoder().encode(json);
+    let bin = '';
+    bytes.forEach(b => { bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function decodeStateFromHash(hashStr) {
+    let b64 = hashStr.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, ch => ch.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
+  function buildCounterSignUrl() {
+    if (!window.location.href.startsWith('http')) return '';
+    const base = window.location.origin + window.location.pathname;
+    const encoded = encodeStateToHash(collectState());
+    return `${base}#s=${encoded}`;
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+      document.getElementById('saveState').textContent = 'Saved automatically';
+    } catch (e) {}
+    updateRowHighlights();
+  }
+
+  function loadState() {
+    // Priority 1: Shared Counter-Sign URL hash (#s=...)
+    if (window.location.hash && window.location.hash.startsWith('#s=')) {
+      try {
+        const shared = decodeStateFromHash(window.location.hash.slice(3));
+        applyState(shared);
+        document.getElementById('saveState').textContent = 'Loaded filled checklist — counter-sign below & click Save / Print PDF';
+        return;
+      } catch (e) {}
+    }
+    // Priority 2: Local saved draft
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      document.getElementById('f_date').value = todayISO;
+      updateRowHighlights();
+      return;
+    }
+    try {
+      applyState(JSON.parse(raw));
+    } catch (e) {}
+    updateRowHighlights();
+  }
+
+  function resetForm() {
+    if (!confirm('Reset all fields back to the default checklist (Design 1 pre-selected)?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    if (window.location.hash) history.replaceState(null, '', window.location.pathname);
+    form.reset();
+    document.getElementById('f_date').value = todayISO;
+    clearSig('sigClient');
+    clearSig('sigDesigner');
+    Object.keys(FILE_SLOTS).forEach(k => { attachedFiles[k] = []; renderSlotChips(k); });
+    updateFileCounter();
+    updateRowHighlights();
+    showToast('Checklist reset');
+  }
+
+  // Build structured text summary for WhatsApp / Email / Copy
+  function buildSummaryText() {
+    const v = id => (document.getElementById(id)?.value || '').trim();
+    const rad = name => form.querySelector(`input[name="${name}"]:checked`)?.value || 'Not selected';
+    const chks = name => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => {
+      let val = el.value;
+      if (val === 'Other page' && v('f_other_page')) val = 'Other: ' + v('f_other_page');
+      if (val === 'Other brands/products' && v('f_other_brands')) val = 'Other: ' + v('f_other_brands');
+      return '• ' + val;
+    });
+
+    const fileLines = [];
+    Object.entries(FILE_SLOTS).forEach(([slot, meta]) => {
+      if (attachedFiles[slot].length) {
+        fileLines.push(`• ${meta.label}: ${attachedFiles[slot].map(f => f.name).join(', ')}`);
+      }
+    });
+
+    const csUrl = buildCounterSignUrl();
+    const lines = [
+      'DIGITAGEN SDN BHD — WEBSITE REQUIREMENTS CHECKLIST',
+      '==================================================',
+      `Company: ${v('f_company')}`,
+      `SSM No.: ${v('f_ssm') || '-'}`,
+      `Contact Person: ${v('f_contact') || '-'}`,
+      `Mobile / WhatsApp: ${v('f_mobile')}`,
+      `Tel: ${v('f_tel')}`,
+      `Email: ${v('f_email')}`,
+      `Date: ${v('f_date') || '-'}`,
+      '',
+      '1. DESIGN',
+      `Selected: ${rad('design_choice')}`,
+      v('f_design_notes') ? `Notes: ${v('f_design_notes')}` : null,
+      '',
+      '2. DOMAIN & HOSTING',
+      `Status: ${rad('domain_status')}${v('f_domain_name') ? ' (' + v('f_domain_name') + ')' : ''}`,
+      v('f_registrar') ? `Registrar: ${v('f_registrar')}` : null,
+      v('f_login_holder') ? `Login holder: ${v('f_login_holder')}` : null,
+      form.querySelector('input[name="domain_has_email"]:checked') ? `Company email on domain: ${rad('domain_has_email')}` : null,
+      form.querySelector('input[name="domain_has_site"]:checked') ? `Existing website: ${rad('domain_has_site')}` : null,
+      '',
+      '3. PAGES',
+      ...(chks('pages').length ? chks('pages') : ['(None ticked)']),
+      '',
+      '4. PRODUCTS & PRICES',
+      `Price display: ${rad('price_display')}`,
+      ...chks('brands'),
+      ...(chks('needed_items').length ? ['Confirmed from Digitagen:', ...chks('needed_items')] : []),
+      '',
+      '5. ORDERING & CONTACT',
+      ...(chks('ordering').length ? chks('ordering') : ['(None ticked)']),
+      v('f_alt_contact') ? `Alternate quote recipient: ${v('f_alt_contact')}` : null,
+      '',
+      '6. LANGUAGES',
+      ...(chks('languages').length ? chks('languages') : ['(None ticked)']),
+      form.querySelector('input[name="translation_by"]:checked') ? `Translations: ${rad('translation_by')}` : null,
+      '',
+      '7. CONTENT READY / SENT',
+      ...(chks('content_sent').length ? chks('content_sent') : ['(Pending)']),
+      ...(fileLines.length ? ['', `ATTACHED FILES (${totalAttachedCount()} bundled in Digitagen-Website-Assets.zip):`, ...fileLines] : []),
+      '',
+      '8. GOOGLE & MARKETING',
+      ...(chks('marketing').length ? chks('marketing') : ['(None ticked)']),
+      '',
+      '9. AFTER LAUNCH',
+      `Updates: ${rad('after_launch')}`,
+      v('f_update_person') ? `Updates approver: ${v('f_update_person')}` : null,
+      '',
+      '10. TIMELINE & SIGN-OFF',
+      `Target launch: ${v('f_target_date') || '-'}`,
+      `Design approver: ${v('f_approver') || '-'}`,
+      v('f_other_req') ? `Other requests: ${v('f_other_req')}` : null,
+      v('f_sig_client_name') ? `Signed by (Digitagen): ${v('f_sig_client_name')} (${v('f_sig_client_date') || '-'})` : null,
+      csUrl ? '' : null,
+      csUrl ? `Open filled form to counter-sign & export PDF:\n${csUrl}` : null,
+    ].filter(x => x !== null);
+
+    return lines.join('\n');
+  }
+
+  const DESIGNER_WA = '60182071132';
+  const DESIGNER_EMAIL = 'ongzixuan123@gmail.com';
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('open');
+  }
+
+  function pingWhatsApp() {
+    const contact = (document.getElementById('f_contact')?.value || 'Digitagen').trim();
+    const design = form.querySelector('input[name="design_choice"]:checked')?.value || 'Design 1';
+    const msg = `Hi, we just submitted the Digitagen Website Requirements Checklist online (${design}). — ${contact}`;
+    window.open(`https://wa.me/${DESIGNER_WA}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function canvasToPngBlob(canvasId) {
+    return new Promise(resolve => {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || !sigStrokes[canvasId] || !sigStrokes[canvasId].length) return resolve(null);
+      canvas.toBlob(blob => resolve(blob), 'image/png');
+    });
+  }
+
+  function sanitizeFilename(name) {
+    return (name || 'file').replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 120);
+  }
+
+  async function submitChecklist() {
+    const btnBar = document.getElementById('btnSubmitBar');
+    const btnInl = document.getElementById('btnSubmitInline');
+    const progWrap = document.getElementById('uploadProgWrap');
+    const progFill = document.getElementById('uploadProgFill');
+    const progTxt = document.getElementById('uploadProgTxt');
+
+    const setProgress = (pct, label) => {
+      if (progWrap) progWrap.classList.add('active');
+      if (progFill) progFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+      if (progTxt) progTxt.textContent = label;
+      if (btnBar) btnBar.textContent = label.length > 26 ? `Uploading (${Math.round(pct)}%)...` : label;
+      if (btnInl) btnInl.textContent = label;
+    };
+
+    if (btnBar) btnBar.disabled = true;
+    if (btnInl) btnInl.disabled = true;
+
+    try {
+      saveState();
+
+      const submissionId = `dig_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      const uploadedFiles = [];
+
+      // Gather all files to upload directly to Private Vercel Blob (supports up to 100 MB per file!)
+      const queue = [];
+      Object.entries(FILE_SLOTS).forEach(([slot, meta]) => {
+        attachedFiles[slot].forEach(file => {
+          queue.push({ slot, slotLabel: meta.label, file });
+        });
+      });
+
+      const sigBlob = await canvasToPngBlob('sigClient');
+      const totalSteps = queue.length + (sigBlob ? 1 : 0) + 1;
+      let doneSteps = 0;
+
+      for (let i = 0; i < queue.length; i++) {
+        const item = queue[i];
+        const safeName = sanitizeFilename(item.file.name);
+        const pathname = `uploads/${submissionId}/${item.slot}/${safeName}`;
+        setProgress((doneSteps / totalSteps) * 100, `Uploading ${item.file.name} (${i + 1}/${queue.length})...`);
+
+        const blobRes = await window.VercelBlob.upload(pathname, item.file, {
+          access: 'private',
+          handleUploadUrl: '/api/upload',
+          multipart: item.file.size > 4_500_000,
+          onUploadProgress: (p) => {
+            const frac = (doneSteps + (p.percentage || 0) / 100) / totalSteps;
+            setProgress(frac * 100, `Uploading ${item.file.name} (${Math.round(p.percentage || 0)}%)...`);
+          },
+        });
+
+        uploadedFiles.push({
+          slot: item.slot,
+          slotLabel: item.slotLabel,
+          name: item.file.name,
+          size: item.file.size,
+          contentType: item.file.type || blobRes.contentType || 'application/octet-stream',
+          pathname: blobRes.pathname,
+        });
+        doneSteps++;
+      }
+
+      let clientSigPathname = null;
+      if (sigBlob) {
+        setProgress((doneSteps / totalSteps) * 100, 'Saving signature...');
+        const sigRes = await window.VercelBlob.upload(
+          `uploads/${submissionId}/signature/Digitagen-Signature.png`,
+          sigBlob,
+          { access: 'private', handleUploadUrl: '/api/upload' }
+        );
+        clientSigPathname = sigRes.pathname;
+        doneSteps++;
+      }
+
+      setProgress(92, 'Saving checklist to database...');
+
+      const v = id => (document.getElementById(id)?.value || '').trim();
+      const rad = name => form.querySelector(`input[name="${name}"]:checked`)?.value || '';
+      const chks = name => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => {
+        let val = el.value;
+        if (val === 'Other page' && v('f_other_page')) val = 'Other: ' + v('f_other_page');
+        if (val === 'Other brands/products' && v('f_other_brands')) val = 'Other: ' + v('f_other_brands');
+        return val;
+      });
+
+      const payload = {
+        submissionId,
+        company: {
+          name: v('f_company') || 'Digitagen Sdn Bhd',
+          ssm: v('f_ssm'),
+          address: v('f_address'),
+          contactPerson: v('f_contact'),
+          mobile: v('f_mobile'),
+          tel: v('f_tel'),
+          email: v('f_email'),
+          dateFilled: v('f_date'),
+        },
+        design: {
+          choice: rad('design_choice'),
+          notes: v('f_design_notes'),
+        },
+        domain: {
+          status: rad('domain_status'),
+          domainName: v('f_domain_name'),
+          registrar: v('f_registrar'),
+          loginHolder: v('f_login_holder'),
+          hasEmail: rad('domain_has_email'),
+          hasSite: rad('domain_has_site'),
+        },
+        pages: chks('pages'),
+        products: {
+          priceDisplay: rad('price_display'),
+          brands: chks('brands'),
+          confirmedSpecs: chks('needed_items'),
+        },
+        ordering: {
+          features: chks('ordering'),
+          altContact: v('f_alt_contact'),
+        },
+        languages: {
+          selected: chks('languages'),
+          translationBy: rad('translation_by'),
+        },
+        contentSent: chks('content_sent'),
+        marketing: chks('marketing'),
+        afterLaunch: {
+          plan: rad('after_launch'),
+          updatePerson: v('f_update_person'),
+        },
+        timeline: {
+          targetLaunchDate: v('f_target_date'),
+          designApprover: v('f_approver'),
+          otherRequests: v('f_other_req'),
+        },
+        clientSign: {
+          name: v('f_sig_client_name'),
+          date: v('f_sig_client_date'),
+          pathname: clientSigPathname,
+        },
+        files: uploadedFiles,
+      };
+
+      const resp = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const resJson = await resp.json().catch(() => ({}));
+      if (!resp.ok || !resJson.ok) {
+        throw new Error(resJson.error || 'Could not save checklist');
+      }
+
+      setProgress(100, 'Saved!');
+      const fNote = uploadedFiles.length > 0
+        ? ` along with ${uploadedFiles.length} uploaded ${uploadedFiles.length === 1 ? 'file' : 'files'}`
+        : '';
+      document.getElementById('modalSizeWarn').style.display = 'none';
+      document.getElementById('modalMsg').textContent = `Thank you! Your completed requirements checklist${fNote} has been saved securely (Ref: ${submissionId}) and the designer has been notified.`;
+      document.getElementById('successModal').classList.add('open');
+    } catch (err) {
+      console.error('Submit error:', err);
+      showToast('Upload error — please retry');
+      alert('Could not submit right now: ' + (err?.message || 'Network error') + '. Please try again or use WhatsApp.');
+    } finally {
+      if (btnBar) { btnBar.disabled = false; btnBar.textContent = '✓ Done — Submit'; }
+      if (btnInl) { btnInl.disabled = false; btnInl.textContent = '✓ Done — Submit Checklist'; }
+      if (progWrap) setTimeout(() => progWrap.classList.remove('active'), 1800);
+    }
+  }
+
+  function checkSubmittedBanner() {}
+
+  async function sendWhatsApp() {
+    const text = buildSummaryText();
+    if (totalAttachedCount() > 0) {
+      await downloadZip(true);
+      showToast('Downloaded Digitagen-Website-Assets.zip — drop it into WhatsApp!');
+    }
+    window.open(`https://wa.me/${DESIGNER_WA}?text=${encodeURIComponent(text)}`, '_blank');
+  }
+
+  async function sendEmail() {
+    const text = buildSummaryText();
+    if (totalAttachedCount() > 0) {
+      await downloadZip(true);
+      showToast('Downloaded Digitagen-Website-Assets.zip — attach it to your email!');
+    }
+    const subject = 'Digitagen Sdn Bhd — Website Requirements Checklist';
+    window.location.href = `mailto:${DESIGNER_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+  }
+
+  async function copySummary() {
+    const text = buildSummaryText();
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('Checklist summary copied to clipboard');
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      showToast('Checklist summary copied');
+    }
+  }
+
+  // Signature Pads (Mouse + Touch) with stroke persistence for Counter-Sign Links
+  function redrawSig(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ph = document.getElementById(canvasId + 'Ph');
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, rect.width) * dpr;
+    canvas.height = Math.max(1, rect.height) * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.strokeStyle = '#111113';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    const strokes = sigStrokes[canvasId] || [];
+    if (!strokes.length) {
+      ph.style.display = 'flex';
+      return;
+    }
+    ph.style.display = 'none';
+    const sx = rect.width / 300;
+    const sy = rect.height / 92;
+    strokes.forEach(pts => {
+      if (pts.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0] * sx, pts[0][1] * sy);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i][0] * sx, pts[i][1] * sy);
+      }
+      ctx.stroke();
+    });
+  }
+
+  function initSig(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ph = document.getElementById(canvasId + 'Ph');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let curStroke = null;
+    let lastPt = null;
+
+    redrawSig(canvasId);
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      return {
+        x: pt.clientX - rect.left,
+        y: pt.clientY - rect.top,
+        nx: Math.round(((pt.clientX - rect.left) / Math.max(1, rect.width)) * 300),
+        ny: Math.round(((pt.clientY - rect.top) / Math.max(1, rect.height)) * 92),
+      };
+    }
+    function start(e) {
+      drawing = true;
+      ph.style.display = 'none';
+      const p = getPos(e);
+      curStroke = [[p.nx, p.ny]];
+      sigStrokes[canvasId].push(curStroke);
+      lastPt = p;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    }
+    function move(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      if (lastPt && Math.hypot(p.x - lastPt.x, p.y - lastPt.y) < 3) return;
+      curStroke.push([p.nx, p.ny]);
+      lastPt = p;
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    }
+    function end() {
+      if (!drawing) return;
+      drawing = false;
+      curStroke = null;
+      saveState();
+    }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', end);
+  }
+
+  function clearSig(canvasId) {
+    sigStrokes[canvasId] = [];
+    redrawSig(canvasId);
+    saveState();
+  }
+
+  form.addEventListener('input', saveState);
+  form.addEventListener('change', saveState);
+  initSig('sigClient');
+  initSig('sigDesigner');
+  initUploadSlots();
+  loadState();
+  checkSubmittedBanner();
+  window.addEventListener('resize', () => { redrawSig('sigClient'); redrawSig('sigDesigner'); });
+</script>
+</body>
+</html>

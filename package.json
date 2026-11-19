@@ -1,0 +1,15 @@
+{
+  "name": "digitagen-checklist",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/blob-client.js --bundle --format=iife --global-name=VercelBlob --minify --outfile=public/blob-client.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.9.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
