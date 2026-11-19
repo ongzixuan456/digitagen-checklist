@@ -295,12 +295,117 @@
   .content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px 16px;
+    gap: 10px 14px;
   }
   .content-grid .check-row {
     border: 1px solid #ECEBE6;
     border-radius: 8px;
-    padding: 9px 11px;
+    padding: 10px 12px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* File Attachment Boxes & Inline Pickers */
+  .upload-zone {
+    margin-top: 12px;
+    border: 1.5px dashed #C7C6BE;
+    border-radius: 9px;
+    background: #FAFAF7;
+    padding: 13px 15px;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .upload-zone.drag-over {
+    border-color: var(--ink);
+    background: #F1F0EA;
+  }
+  .upload-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .upload-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .upload-hint { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .btn-attach {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: inherit;
+    font-size: 11.8px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #FFFFFF;
+    border: 1px solid #D4D4D8;
+    border-radius: 6px;
+    padding: 5.5px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.12s, border-color 0.12s;
+  }
+  .btn-attach:hover { background: #F4F3EF; border-color: #111113; }
+  .btn-attach-sm {
+    font-size: 11px;
+    padding: 4px 8px;
+    margin-left: 28px;
+    align-self: flex-start;
+  }
+  .file-input-hidden { display: none; }
+  .file-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .file-chips:empty { display: none; }
+  .content-grid .file-chips { margin-top: 2px; margin-left: 28px; }
+  .file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #DCDAD2;
+    border-radius: 6px;
+    padding: 3.5px 7px 3.5px 5px;
+    font-size: 11.2px;
+    color: var(--ink);
+    max-width: 100%;
+  }
+  .file-chip img {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid #E4E4E7;
+    flex-shrink: 0;
+  }
+  .file-chip-name {
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .file-chip-size { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+  .file-chip-rm {
+    border: none;
+    background: none;
+    color: #71717A;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+  }
+  .file-chip-rm:hover { color: #B91C1C; }
+  .btn-zip {
+    background: #1D4ED8;
+    color: #FFFFFF;
+  }
+  .btn-zip:disabled {
+    background: #E4E4E7;
+    color: #A1A1AA;
+    cursor: not-allowed;
+    opacity: 1;
   }
 
   /* Signature Area */
@@ -444,10 +549,11 @@
     @page { size: A4 portrait; margin: 12mm; }
     body { background: #FFFFFF; padding: 0; font-size: 11px; }
     .sheet { border: none; box-shadow: none; padding: 0; max-width: none; }
-    .action-bar, .save-pill, .btn-clear-sig, .toast { display: none !important; }
+    .action-bar, .save-pill, .btn-clear-sig, .toast, .btn-attach, .file-chip-rm { display: none !important; }
     .section { break-inside: avoid; }
     .input, textarea { border: 1px solid #D4D4D8; padding: 5px 8px; font-size: 11px; }
     .check-row { padding: 6px 6px; }
+    .upload-zone { padding: 8px 10px; border-style: solid; }
   }
 </style>
 </head>
@@ -677,6 +783,18 @@
       <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Urai (Mi Telur Original, Flat, Corn Vermicelli)" checked><div class="row-title"><b>Urai</b> — Mi Telur Original · Mi Telur Flat · Corn Vermicelli (Bihun Jagung)</div></div><span class="cost-tag cost-inc">Included</span></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="brands" value="Other brands/products"><div class="row-title">Other brands or products to add: <input class="inline-input" id="f_other_brands" name="other_brands" placeholder="Specify brand / SKU..." onclick="event.stopPropagation();"></div></div><span class="cost-tag cost-ext">Extra cost / product</span></label>
     </div>
+
+    <div class="upload-zone" data-slot="pricing_specs">
+      <div class="upload-head">
+        <div>
+          <div class="upload-title">Attach price list, Q-LITE specs or catalogue files</div>
+          <div class="upload-hint">Drop or select PDF, Excel, Word or images (e.g. Q-LITE dimensions, barcodes, RSP/quotation sheet).</div>
+        </div>
+        <button type="button" class="btn-attach" onclick="triggerUpload('pricing_specs')">+ Attach files</button>
+      </div>
+      <input type="file" class="file-input-hidden" id="up_pricing_specs" multiple accept=".pdf,.xlsx,.xls,.csv,.doc,.docx,.png,.jpg,.jpeg,.webp">
+      <div class="file-chips" id="chips_pricing_specs"></div>
+    </div>
   </section>
 
   <!-- 5. ORDERING & CONTACT -->
@@ -729,16 +847,46 @@
       <span class="sec-num">7</span>
       <span class="sec-title">Content Digitagen will send</span>
     </div>
-    <p class="sec-note">Tick each item once it has been sent or is ready to share with the designer.</p>
+    <p class="sec-note">Attach logos, photos or documents directly below (multiple files supported). Attached files auto-tick the item and can be bundled into one <b>.zip</b> file at the bottom to send via WhatsApp or Email.</p>
     <div class="content-grid">
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Digitagen logo"><div><div class="row-title"><b>Digitagen logo</b></div><div class="row-sub">AI, SVG or high-res PNG</div></div></div></label>
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Q-LITE, Merry Brite & Urai logos"><div><div class="row-title"><b>Q-LITE, Merry Brite &amp; Urai logos</b></div><div class="row-sub">AI, SVG or high-res PNG</div></div></div></label>
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Company story for About us"><div><div class="row-title"><b>Company story for About us</b></div><div class="row-sub">Year started, products, areas served</div></div></div></label>
+      <div class="check-row" data-slot="digitagen_logo">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_digitagen_logo" name="content_sent" value="Digitagen logo"><div><div class="row-title"><b>Digitagen logo</b></div><div class="row-sub">AI, SVG, PDF or high-res PNG</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('digitagen_logo')">+ Attach logo</button>
+        <input type="file" class="file-input-hidden" id="up_digitagen_logo" multiple accept=".ai,.svg,.eps,.pdf,.png,.jpg,.jpeg,.webp">
+        <div class="file-chips" id="chips_digitagen_logo"></div>
+      </div>
+
+      <div class="check-row" data-slot="brand_logos">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_brand_logos" name="content_sent" value="Q-LITE, Merry Brite & Urai logos"><div><div class="row-title"><b>Q-LITE, Merry Brite &amp; Urai logos</b></div><div class="row-sub">AI, SVG, PDF or high-res PNG</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('brand_logos')">+ Attach brand logos</button>
+        <input type="file" class="file-input-hidden" id="up_brand_logos" multiple accept=".ai,.svg,.eps,.pdf,.png,.jpg,.jpeg,.webp">
+        <div class="file-chips" id="chips_brand_logos"></div>
+      </div>
+
+      <div class="check-row" data-slot="company_story">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_company_story" name="content_sent" value="Company story for About us"><div><div class="row-title"><b>Company story for About us</b></div><div class="row-sub">Year started, products, areas served</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('company_story')">+ Attach Word / PDF</button>
+        <input type="file" class="file-input-hidden" id="up_company_story" multiple accept=".doc,.docx,.pdf,.txt">
+        <div class="file-chips" id="chips_company_story"></div>
+      </div>
+
+      <div class="check-row" data-slot="product_photos">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_product_photos" name="content_sent" value="Product photos"><div><div class="row-title"><b>Product photos</b></div><div class="row-sub">High-res originals &amp; any updated packs</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('product_photos')">+ Attach photos</button>
+        <input type="file" class="file-input-hidden" id="up_product_photos" multiple accept="image/*,.pdf,.zip">
+        <div class="file-chips" id="chips_product_photos"></div>
+      </div>
+
+      <div class="check-row" data-slot="certificates">
+        <label class="check-left" style="cursor:pointer;"><input type="checkbox" id="chk_certificates" name="content_sent" value="Certificates or approvals"><div><div class="row-title"><b>Certificates or approvals</b></div><div class="row-sub">e.g. SIRIM, Halal, ISO (if applicable)</div></div></label>
+        <button type="button" class="btn-attach btn-attach-sm" onclick="triggerUpload('certificates')">+ Attach certificates</button>
+        <input type="file" class="file-input-hidden" id="up_certificates" multiple accept=".pdf,image/*">
+        <div class="file-chips" id="chips_certificates"></div>
+      </div>
+
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Business hours"><div><div class="row-title"><b>Business hours</b></div><div class="row-sub">e.g. Mon–Fri, 9:00 am – 6:00 pm</div></div></div></label>
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Product photos"><div><div class="row-title"><b>Product photos</b></div><div class="row-sub">High-res originals &amp; any updated packs</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Social media links"><div><div class="row-title"><b>Social media links</b></div><div class="row-sub">Facebook, Instagram, TikTok (if any)</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="SSM registration number"><div><div class="row-title"><b>SSM registration number</b></div><div class="row-sub">For website footer &amp; .com.my domain</div></div></div></label>
-      <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Certificates or approvals"><div><div class="row-title"><b>Certificates or approvals</b></div><div class="row-sub">e.g. SIRIM, Halal, ISO (if applicable)</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Customer reviews / stockists"><div><div class="row-title"><b>Customer reviews / stockists</b></div><div class="row-sub">Real customers only, with permission</div></div></div></label>
       <label class="check-row"><div class="check-left"><input type="checkbox" name="content_sent" value="Verified Company details"><div><div class="row-title"><b>Verify Company details</b></div><div class="row-sub">Confirm address, phone &amp; email above</div></div></div></label>
     </div>
@@ -834,9 +982,10 @@
 <div class="action-bar">
   <div class="action-inner">
     <div class="action-status">
-      <b id="selectedSummary">Design 1 · Brand Slider</b> · <span id="checkedCount">0</span> items ticked
+      <b id="selectedSummary">Design 1 · Brand Slider</b> · <span id="checkedCount">0</span> ticked · <span id="fileCount">0 files</span>
     </div>
     <div class="action-btns">
+      <button type="button" class="btn btn-zip" id="btnZip" onclick="downloadZip()" disabled>Download Files (.zip)</button>
       <button type="button" class="btn btn-wa" onclick="sendWhatsApp()">Send via WhatsApp</button>
       <button type="button" class="btn btn-outline" onclick="sendEmail()">Send via Email</button>
       <button type="button" class="btn btn-outline" onclick="copySummary()">Copy Text</button>
@@ -855,6 +1004,240 @@
 
   // Store lightweight signature strokes (normalized 0..300 x 0..92) for localStorage & Counter-Sign Link
   const sigStrokes = { sigClient: [], sigDesigner: [] };
+
+  // Store attached files per slot (in-memory File objects for clean .zip bundling + manifest)
+  const FILE_SLOTS = {
+    pricing_specs:  { label: 'Pricing & Specs',    folder: '01-Pricing-and-Specs', chkId: null },
+    digitagen_logo: { label: 'Digitagen Logo',     folder: '02-Digitagen-Logo',    chkId: 'chk_digitagen_logo' },
+    brand_logos:    { label: 'Brand Logos',        folder: '03-Brand-Logos',       chkId: 'chk_brand_logos' },
+    company_story:  { label: 'Company Story',      folder: '04-Company-Story',     chkId: 'chk_company_story' },
+    product_photos: { label: 'Product Photos',     folder: '05-Product-Photos',    chkId: 'chk_product_photos' },
+    certificates:   { label: 'Certificates',       folder: '06-Certificates',      chkId: 'chk_certificates' },
+  };
+  const attachedFiles = {};
+  Object.keys(FILE_SLOTS).forEach(k => { attachedFiles[k] = []; });
+
+  function formatBytes(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1048576) return (n / 1024).toFixed(0) + ' KB';
+    return (n / 1048576).toFixed(1) + ' MB';
+  }
+
+  function triggerUpload(slot) {
+    const inp = document.getElementById('up_' + slot);
+    if (inp) inp.click();
+  }
+
+  function addFilesToSlot(slot, fileList) {
+    if (!fileList || !fileList.length) return;
+    Array.from(fileList).forEach(file => {
+      const exists = attachedFiles[slot].some(f => f.name === file.name && f.size === file.size);
+      if (!exists) attachedFiles[slot].push(file);
+    });
+    const chkId = FILE_SLOTS[slot].chkId;
+    if (chkId && attachedFiles[slot].length) {
+      const chk = document.getElementById(chkId);
+      if (chk) chk.checked = true;
+    }
+    renderSlotChips(slot);
+    updateFileCounter();
+    saveState();
+  }
+
+  function removeFileFromSlot(slot, idx) {
+    attachedFiles[slot].splice(idx, 1);
+    renderSlotChips(slot);
+    updateFileCounter();
+    saveState();
+  }
+
+  function renderSlotChips(slot) {
+    const box = document.getElementById('chips_' + slot);
+    if (!box) return;
+    box.innerHTML = '';
+    attachedFiles[slot].forEach((file, idx) => {
+      const chip = document.createElement('span');
+      chip.className = 'file-chip';
+      if (file.type && file.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = '';
+        chip.appendChild(img);
+      }
+      const nm = document.createElement('span');
+      nm.className = 'file-chip-name';
+      nm.title = file.name;
+      nm.textContent = file.name;
+      const sz = document.createElement('span');
+      sz.className = 'file-chip-size';
+      sz.textContent = formatBytes(file.size);
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'file-chip-rm';
+      rm.title = 'Remove file';
+      rm.innerHTML = '&times;';
+      rm.onclick = (e) => { e.preventDefault(); e.stopPropagation(); removeFileFromSlot(slot, idx); };
+      chip.appendChild(nm);
+      chip.appendChild(sz);
+      chip.appendChild(rm);
+      box.appendChild(chip);
+    });
+  }
+
+  function totalAttachedCount() {
+    return Object.values(attachedFiles).reduce((sum, list) => sum + list.length, 0);
+  }
+
+  function updateFileCounter() {
+    const n = totalAttachedCount();
+    const fc = document.getElementById('fileCount');
+    if (fc) fc.textContent = n === 1 ? '1 file' : `${n} files`;
+    const btn = document.getElementById('btnZip');
+    if (btn) {
+      btn.disabled = n === 0;
+      btn.textContent = n > 0 ? `Download Files (${n}) .zip` : 'Download Files (.zip)';
+    }
+  }
+
+  function initUploadSlots() {
+    Object.keys(FILE_SLOTS).forEach(slot => {
+      const inp = document.getElementById('up_' + slot);
+      if (inp) {
+        inp.addEventListener('change', () => {
+          addFilesToSlot(slot, inp.files);
+          inp.value = '';
+        });
+      }
+      const zone = document.querySelector(`[data-slot="${slot}"]`);
+      if (zone) {
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', e => {
+          e.preventDefault();
+          zone.classList.remove('drag-over');
+          addFilesToSlot(slot, e.dataTransfer.files);
+        });
+      }
+    });
+    updateFileCounter();
+  }
+
+  // Zero-dependency PKZIP (STORE) builder so all attached files + summary bundle into 1 crisp .zip!
+  const CRC_TABLE = (() => {
+    const t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[i] = c >>> 0;
+    }
+    return t;
+  })();
+
+  function crc32(bytes) {
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  async function buildZipBlob() {
+    const entries = [];
+    const enc = new TextEncoder();
+
+    // Include readable checklist summary text inside the zip
+    entries.push({
+      name: 'Digitagen-Checklist-Summary.txt',
+      data: enc.encode(buildSummaryText()),
+    });
+
+    for (const [slot, list] of Object.entries(attachedFiles)) {
+      const folder = FILE_SLOTS[slot].folder;
+      for (const file of list) {
+        const buf = new Uint8Array(await file.arrayBuffer());
+        entries.push({ name: `${folder}/${file.name}`, data: buf });
+      }
+    }
+
+    const parts = [];
+    const central = [];
+    let offset = 0;
+
+    for (const entry of entries) {
+      const nameBytes = enc.encode(entry.name);
+      const data = entry.data;
+      const crc = crc32(data);
+
+      const lh = new ArrayBuffer(30);
+      const lv = new DataView(lh);
+      lv.setUint32(0, 0x04034b50, true); // Local file header signature
+      lv.setUint16(4, 20, true);         // Version needed
+      lv.setUint16(6, 0x0800, true);     // UTF-8 flag
+      lv.setUint16(8, 0, true);          // Method: STORE
+      lv.setUint16(10, 0, true);         // Mod time
+      lv.setUint16(12, 0x5421, true);    // Mod date
+      lv.setUint32(14, crc, true);
+      lv.setUint32(18, data.length, true);
+      lv.setUint32(22, data.length, true);
+      lv.setUint16(26, nameBytes.length, true);
+      lv.setUint16(28, 0, true);
+
+      parts.push(new Uint8Array(lh), nameBytes, data);
+
+      const cd = new ArrayBuffer(46);
+      const cv = new DataView(cd);
+      cv.setUint32(0, 0x02014b50, true); // Central directory signature
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0x0800, true);
+      cv.setUint16(10, 0, true);
+      cv.setUint16(12, 0, true);
+      cv.setUint16(14, 0x5421, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, data.length, true);
+      cv.setUint32(24, data.length, true);
+      cv.setUint16(28, nameBytes.length, true);
+      cv.setUint16(30, 0, true);
+      cv.setUint16(32, 0, true);
+      cv.setUint16(34, 0, true);
+      cv.setUint16(36, 0, true);
+      cv.setUint32(38, 0, true);
+      cv.setUint32(42, offset, true);
+
+      central.push(new Uint8Array(cd), nameBytes);
+      offset += 30 + nameBytes.length + data.length;
+    }
+
+    const cdSize = central.reduce((s, b) => s + b.length, 0);
+    const eocd = new ArrayBuffer(22);
+    const ev = new DataView(eocd);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(4, 0, true);
+    ev.setUint16(6, 0, true);
+    ev.setUint16(8, entries.length, true);
+    ev.setUint16(10, entries.length, true);
+    ev.setUint32(12, cdSize, true);
+    ev.setUint32(16, offset, true);
+    ev.setUint16(20, 0, true);
+
+    return new Blob([...parts, ...central, new Uint8Array(eocd)], { type: 'application/zip' });
+  }
+
+  async function downloadZip(silentToast) {
+    const n = totalAttachedCount();
+    if (n === 0) {
+      showToast('Attach at least one file first');
+      return;
+    }
+    const blob = await buildZipBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Digitagen-Website-Assets.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    if (!silentToast) showToast(`Downloaded Digitagen-Website-Assets.zip (${n} files)`);
+  }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -978,6 +1361,8 @@
     document.getElementById('f_date').value = todayISO;
     clearSig('sigClient');
     clearSig('sigDesigner');
+    Object.keys(FILE_SLOTS).forEach(k => { attachedFiles[k] = []; renderSlotChips(k); });
+    updateFileCounter();
     updateRowHighlights();
     showToast('Checklist reset');
   }
@@ -991,6 +1376,13 @@
       if (val === 'Other page' && v('f_other_page')) val = 'Other: ' + v('f_other_page');
       if (val === 'Other brands/products' && v('f_other_brands')) val = 'Other: ' + v('f_other_brands');
       return '• ' + val;
+    });
+
+    const fileLines = [];
+    Object.entries(FILE_SLOTS).forEach(([slot, meta]) => {
+      if (attachedFiles[slot].length) {
+        fileLines.push(`• ${meta.label}: ${attachedFiles[slot].map(f => f.name).join(', ')}`);
+      }
     });
 
     const csUrl = buildCounterSignUrl();
@@ -1034,6 +1426,7 @@
       '',
       '7. CONTENT READY / SENT',
       ...(chks('content_sent').length ? chks('content_sent') : ['(Pending)']),
+      ...(fileLines.length ? ['', `ATTACHED FILES (${totalAttachedCount()} bundled in Digitagen-Website-Assets.zip):`, ...fileLines] : []),
       '',
       '8. GOOGLE & MARKETING',
       ...(chks('marketing').length ? chks('marketing') : ['(None ticked)']),
@@ -1057,13 +1450,21 @@
   const DESIGNER_WA = '60182071132';
   const DESIGNER_EMAIL = 'ongzixuan123@gmail.com';
 
-  function sendWhatsApp() {
+  async function sendWhatsApp() {
     const text = buildSummaryText();
+    if (totalAttachedCount() > 0) {
+      await downloadZip(true);
+      showToast('Downloaded Digitagen-Website-Assets.zip — drop it into WhatsApp!');
+    }
     window.open(`https://wa.me/${DESIGNER_WA}?text=${encodeURIComponent(text)}`, '_blank');
   }
 
-  function sendEmail() {
+  async function sendEmail() {
     const text = buildSummaryText();
+    if (totalAttachedCount() > 0) {
+      await downloadZip(true);
+      showToast('Downloaded Digitagen-Website-Assets.zip — attach it to your email!');
+    }
     const subject = 'Digitagen Sdn Bhd — Website Requirements Checklist';
     window.location.href = `mailto:${DESIGNER_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
   }
@@ -1183,6 +1584,7 @@
   form.addEventListener('change', saveState);
   initSig('sigClient');
   initSig('sigDesigner');
+  initUploadSlots();
   loadState();
   window.addEventListener('resize', () => { redrawSig('sigClient'); redrawSig('sigDesigner'); });
 </script>
